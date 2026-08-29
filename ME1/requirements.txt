@@ -1,0 +1,7 @@
+# Install torch + torchvision matching the DGX CUDA driver (CUDA 13 driver is
+# backward-compatible with cu124 wheels). Run the torch line separately:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+einops
+matplotlib
+jupyter
+nbconvert
