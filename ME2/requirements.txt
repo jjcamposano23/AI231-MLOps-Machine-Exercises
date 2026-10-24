@@ -1,0 +1,51 @@
+# ME2 - Voice Command Model (VCM) - training + dev environment (me2env)
+# Python 3.10 or 3.11 recommended.
+#
+# PyTorch install note:
+#   The torch/torchaudio wheels below come from PyTorch's own index, NOT PyPI.
+#   Choose ONE index and install torch first, then the rest:
+#
+#   CPU only:
+#     pip install torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+#   NVIDIA GPU (CUDA 12.1):
+#     pip install torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+#
+#   Then:  pip install -r requirements.txt
+# ---------------------------------------------------------------------------
+
+# --- Deep learning framework (install via the index-url above) ---
+torch==2.5.1
+torchaudio==2.5.1
+
+# --- Training stack ---
+pytorch-lightning==2.4.0
+torchmetrics==1.5.2
+tensorboard==2.18.0
+
+# --- Model packaging / deployment (ONNX export + int8 quantization) ---
+onnx==1.17.0
+onnxruntime==1.20.1
+
+# --- Audio I/O + voice activity detection ---
+soundfile==0.12.1
+librosa==0.10.2.post1
+sounddevice==0.5.1
+webrtcvad-wheels==2.0.14      # prebuilt wheel; plain 'webrtcvad' fails to build on Windows
+
+# --- Data, metrics, benchmark plots ---
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.5.2
+pandas==2.2.3
+matplotlib==3.9.2
+seaborn==0.13.2
+tqdm==4.66.5
+
+# --- Demo UI + notebooks ---
+gradio==4.44.1
+huggingface_hub==0.25.2   # pin: gradio 4.44.1 needs HfFolder, removed in hub 1.x
+jupyter==1.1.1
+ipykernel==6.29.5
+
+# --- Demo actuation: laptop (VCM host) -> Arduino Uno over USB serial ---
+pyserial==3.5

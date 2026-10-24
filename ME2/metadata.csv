@@ -1,0 +1,16 @@
+filename,speaker_id,label,phrase,device,accent,sr,duration_s,timestamp
+spk07_play_music_0001.wav,spk07,play_music,play music,laptop,,16000,2.0,2026-09-19T13:44:13
+spk07_play_music_0002.wav,spk07,play_music,play music,laptop,,16000,2.0,2026-09-19T13:44:23
+spk07_play_music_0003.wav,spk07,play_music,play music,laptop,,16000,2.0,2026-09-19T13:44:40
+spk07_play_music_0004.wav,spk07,play_music,play some music,laptop,,16000,2.0,2026-09-19T13:46:01
+spk07_play_music_0005.wav,spk07,play_music,play some music,laptop,,16000,2.0,2026-09-19T13:46:09
+spk07_play_music_0006.wav,spk07,play_music,play some music,laptop,,16000,2.0,2026-09-19T13:46:18
+spk07_play_music_0007.wav,spk07,play_music,put on a song,laptop,,16000,2.0,2026-09-19T13:47:19
+spk07_play_music_0008.wav,spk07,play_music,put on a song,laptop,,16000,2.0,2026-09-19T13:47:24
+spk07_play_music_0009.wav,spk07,play_music,put on a song,laptop,,16000,2.0,2026-09-19T13:47:42
+spk07_play_music_0010.wav,spk07,play_music,start the music,laptop,,16000,2.0,2026-09-19T13:47:57
+spk07_play_music_0011.wav,spk07,play_music,start the music,laptop,,16000,2.0,2026-09-19T13:48:06
+spk07_play_music_0012.wav,spk07,play_music,start the music,laptop,,16000,2.0,2026-09-19T13:48:17
+spk07_play_music_0013.wav,spk07,play_music,play my playlist,laptop,,16000,2.0,2026-09-19T13:48:28
+spk07_play_music_0014.wav,spk07,play_music,play my playlist,laptop,,16000,2.0,2026-09-19T13:48:34
+spk07_play_music_0015.wav,spk07,play_music,play my playlist,laptop,,16000,2.0,2026-09-19T13:49:24

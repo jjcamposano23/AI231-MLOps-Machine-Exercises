@@ -1,0 +1,11 @@
+# ME2 - VCM - Raspberry Pi 4/5 RUNTIME ONLY (inference, no training)
+# Install ON the Pi, in its own venv/conda env. Do NOT install torch here.
+#   pip install -r requirements-rpi.txt
+# ---------------------------------------------------------------------------
+
+onnxruntime==1.20.1
+numpy==1.26.4
+soundfile==0.12.1
+sounddevice==0.5.1
+webrtcvad-wheels==2.0.14
+gradio==4.44.1          # optional: only if you run the Gradio demo UI on the Pi

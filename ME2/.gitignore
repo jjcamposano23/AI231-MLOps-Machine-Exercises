@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+vcm/
+
+# Model checkpoints (large; publish final weights as a GitHub release instead)
+*.ckpt
+
+# Audio / recorded data (not redistributable here)
+*.wav
+cmd_data/
+wake_data/
+noise/
+music/
+
+# Runtime logs
+vcm_benchmark/
+*.log
+
+# Personal / local
+Purchases.pdf
+ssh
+.DS_Store
+data/

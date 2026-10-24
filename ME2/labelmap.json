@@ -1,0 +1,85 @@
+{
+  "_comment": "Maps public-dataset intent labels onto our 12 classes so external corpora can be merged. KEYS are each dataset's own label strings -- confirm exact spellings against that dataset's docs before importing (they drift between releases). RULE: anything outside our 10 commands maps to _unknown_; background/noise maps to _silence_. This is a starter template -- extend it as you import.",
+
+  "our_classes": ["play_music", "query_search", "lights_onoff", "lights_dim",
+                  "set_timer", "set_alarm", "set_thermostat", "media_control",
+                  "reminders", "calls_messaging", "_unknown_", "_silence_"],
+
+  "fluent_speech_commands": {
+    "_note": "keys are '<action>_<object>' from the action/object/location slots",
+    "activate_music": "play_music",
+    "deactivate_music": "media_control",
+    "increase_volume": "media_control",
+    "decrease_volume": "media_control",
+    "activate_lights": "lights_onoff",
+    "deactivate_lights": "lights_onoff",
+    "activate_lamp": "lights_onoff",
+    "deactivate_lamp": "lights_onoff",
+    "increase_heat": "set_thermostat",
+    "decrease_heat": "set_thermostat",
+    "bring_newspaper": "_unknown_",
+    "bring_juice": "_unknown_",
+    "bring_socks": "_unknown_",
+    "bring_shoes": "_unknown_",
+    "change_language": "_unknown_"
+  },
+
+  "slurp": {
+    "_note": "keys are SLURP 'scenario_action' intent labels",
+    "play_music": "play_music",
+    "play_radio": "play_music",
+    "play_podcasts": "play_music",
+    "play_audiobook": "play_music",
+    "weather_query": "query_search",
+    "datetime_query": "query_search",
+    "news_query": "query_search",
+    "qa_factoid": "query_search",
+    "qa_definition": "query_search",
+    "qa_currency": "query_search",
+    "qa_maths": "query_search",
+    "iot_hue_lighton": "lights_onoff",
+    "iot_hue_lightoff": "lights_onoff",
+    "iot_hue_lightdim": "lights_dim",
+    "iot_hue_lightup": "lights_dim",
+    "iot_hue_lightchange": "lights_dim",
+    "alarm_set": "set_alarm",
+    "alarm_query": "_unknown_",
+    "alarm_remove": "_unknown_",
+    "audio_volume_up": "media_control",
+    "audio_volume_down": "media_control",
+    "audio_volume_mute": "media_control",
+    "audio_volume_other": "media_control",
+    "calendar_set": "reminders",
+    "calendar_query": "reminders",
+    "lists_createoradd": "reminders",
+    "lists_query": "reminders",
+    "email_sendemail": "calls_messaging",
+    "social_post": "calls_messaging",
+    "general_quirky": "_unknown_",
+    "iot_wemo_on": "_unknown_",
+    "iot_wemo_off": "_unknown_"
+  },
+
+  "google_speech_commands_v2": {
+    "_note": "single WORDS -- use mainly for media words, _unknown_, and _silence_; digits belong to a slot model, not intent classes",
+    "on": "lights_onoff",
+    "off": "lights_onoff",
+    "up": "media_control",
+    "down": "media_control",
+    "stop": "media_control",
+    "go": "_unknown_",
+    "yes": "_unknown_", "no": "_unknown_", "left": "_unknown_", "right": "_unknown_",
+    "zero": "_unknown_", "one": "_unknown_", "two": "_unknown_", "three": "_unknown_",
+    "four": "_unknown_", "five": "_unknown_", "six": "_unknown_", "seven": "_unknown_",
+    "eight": "_unknown_", "nine": "_unknown_",
+    "_background_noise_": "_silence_"
+  },
+
+  "timers_and_such": {
+    "_note": "main value is spoken NUMBERS for timer/alarm/thermostat slots",
+    "SetTimer": "set_timer",
+    "SetAlarm": "set_alarm",
+    "SimpleMath": "query_search",
+    "UnitConversion": "query_search"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": "Canonical phrasing list per class -- single source of truth for recording and dummy data. Phrasings include common public-dataset wordings (SLURP / Fluent Speech Commands / Speech Commands) so recorded clips match a merged distribution. _silence_ has no spoken prompt (record ambient/no speech).",
+  "sample_rate": 16000,
+  "prompts": {
+    "play_music":      ["play music", "play some music", "put on a song", "start the music", "play my playlist", "play some jazz"],
+    "query_search":    ["what's the weather", "what's the weather like today", "what time is it", "what's the forecast today", "search for pizza places", "what's the news today"],
+    "lights_onoff":    ["turn on the lights", "turn off the lights", "lights on", "lights off", "switch on the light", "switch off the lights"],
+    "lights_dim":      ["dim the lights", "dim the lights to fifty percent", "brighten the lights", "set the brightness to thirty percent", "increase the brightness", "make the lights dimmer"],
+    "set_timer":       ["set a timer for five minutes", "start a timer", "set a timer for ten minutes", "timer for two minutes", "set a countdown for one minute", "set a timer for thirty seconds"],
+    "set_alarm":       ["set an alarm for seven a m", "wake me up at six", "set an alarm", "set an alarm for eight thirty", "set an alarm for six thirty in the morning"],
+    "set_thermostat":  ["set the temperature to twenty four degrees", "set the thermostat to seventy", "make it warmer", "turn up the heat", "turn down the heat", "increase the temperature by two degrees"],
+    "media_control":   ["pause", "stop", "next", "skip this song", "volume up", "volume down", "louder", "increase the volume", "mute", "resume", "play the next track"],
+    "reminders":       ["remind me to buy groceries", "set a reminder", "what are my reminders", "add milk to my list", "add eggs to my shopping list", "remind me to take my medicine"],
+    "calls_messaging": ["call mom", "call dad", "call grandma", "send a message", "send a text to mom", "text John", "make a call"],
+    "_unknown_":       ["tell me a joke", "what's your name", "how are you today", "the quick brown fox jumps over the lazy dog", "one two three four five", "open the garage door please", "read me a story"],
+    "_silence_":       []
+  }
+}
