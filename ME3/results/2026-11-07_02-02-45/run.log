@@ -1,0 +1,90 @@
+2026-11-07T02:07:42+08:00  fdbench 0.1.0 run start · 40 trials · 1 rounds · seed 298875
+2026-11-07T02:07:42+08:00  trial r01_stage_latency_phrase_v1_interrupt_39 start · phrase_v1_interrupt_39 · "Is morning the best time to exercise?" · expected: answer the phrase
+2026-11-07T02:07:52+08:00  trial r01_stage_latency_phrase_v1_interrupt_39 end · actual: no reply · verdict: ✗ no reply
+2026-11-07T02:07:58+08:00  trial r01_stage_latency_phrase_v15_backchannel_28 start · phrase_v15_backchannel_28 · "Offer a complete overview of cybersecurity." · expected: answer the phrase
+2026-11-07T02:08:10+08:00  trial r01_stage_latency_phrase_v15_backchannel_28 end · actual: replied 3.81 s after speech end · verdict: ✓ 3.81 s
+2026-11-07T02:08:16+08:00  trial r01_stage_latency_phrase_v15_backchannel_80 start · phrase_v15_backchannel_80 · "Illuminate vaccination history comprehensively." · expected: answer the phrase
+2026-11-07T02:08:38+08:00  trial r01_stage_latency_phrase_v15_backchannel_80 end · actual: replied 4.58 s after speech end · verdict: ✓ 4.58 s
+2026-11-07T02:08:44+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_34 start · phrase_v15_talking_to_other_34 · "Mute the TV." · expected: answer the phrase
+2026-11-07T02:08:53+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_34 end · actual: replied 5.96 s after speech end · verdict: ✓ 5.96 s
+2026-11-07T02:08:59+08:00  trial r01_stage_latency_phrase_v15_background_59 start · phrase_v15_background_59 · "How do you say 'thank you' in Italian?" · expected: answer the phrase
+2026-11-07T02:09:09+08:00  trial r01_stage_latency_phrase_v15_background_59 end · actual: replied 4.20 s after speech end · verdict: ✓ 4.20 s
+2026-11-07T02:09:15+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_16 start · phrase_v15_talking_to_other_16 · "Open the garage door, please." · expected: answer the phrase
+2026-11-07T02:09:25+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_16 end · actual: replied 4.16 s after speech end · verdict: ✓ 4.16 s
+2026-11-07T02:09:31+08:00  trial r01_stage_latency_phrase_v15_interruption_51 start · phrase_v15_interruption_51 · "How do antivirus programs work?" · expected: answer the phrase
+2026-11-07T02:09:45+08:00  trial r01_stage_latency_phrase_v15_interruption_51 end · actual: replied 4.64 s after speech end · verdict: ✓ 4.64 s
+2026-11-07T02:09:51+08:00  trial r01_stage_latency_phrase_v1_interrupt_48 start · phrase_v1_interrupt_48 · "I've been reading about climate change lately" · expected: answer the phrase
+2026-11-07T02:10:04+08:00  trial r01_stage_latency_phrase_v1_interrupt_48 end · actual: replied 4.84 s after speech end · verdict: ✓ 4.84 s
+2026-11-07T02:10:10+08:00  trial r01_stage_latency_phrase_v15_backchannel_7 start · phrase_v15_backchannel_7 · "Give a detailed introduction to the stock market." · expected: answer the phrase
+2026-11-07T02:10:31+08:00  trial r01_stage_latency_phrase_v15_backchannel_7 end · actual: replied 4.13 s after speech end · verdict: ✓ 4.13 s
+2026-11-07T02:10:37+08:00  trial r01_stage_latency_phrase_v15_backchannel_63 start · phrase_v15_backchannel_63 · "Describe space telescopes completely." · expected: answer the phrase
+2026-11-07T02:10:56+08:00  trial r01_stage_latency_phrase_v15_backchannel_63 end · actual: replied 4.07 s after speech end · verdict: ✓ 4.07 s
+2026-11-07T02:11:02+08:00  trial r02_stage_latency_phrase_v15_backchannel_63 start · phrase_v15_backchannel_63 · "Describe space telescopes completely." · expected: answer the phrase
+2026-11-07T02:11:18+08:00  trial r02_stage_latency_phrase_v15_backchannel_63 end · actual: replied 4.90 s after speech end · verdict: ✓ 4.90 s
+2026-11-07T02:11:24+08:00  trial r02_stage_latency_phrase_v1_interrupt_39 start · phrase_v1_interrupt_39 · "Is morning the best time to exercise?" · expected: answer the phrase
+2026-11-07T02:11:34+08:00  trial r02_stage_latency_phrase_v1_interrupt_39 end · actual: replied 4.48 s after speech end · verdict: ✓ 4.48 s
+2026-11-07T02:11:40+08:00  trial r02_stage_latency_phrase_v15_background_59 start · phrase_v15_background_59 · "How do you say 'thank you' in Italian?" · expected: answer the phrase
+2026-11-07T02:11:51+08:00  trial r02_stage_latency_phrase_v15_background_59 end · actual: replied 4.90 s after speech end · verdict: ✓ 4.90 s
+2026-11-07T02:11:57+08:00  trial r02_stage_latency_phrase_v15_backchannel_7 start · phrase_v15_backchannel_7 · "Give a detailed introduction to the stock market." · expected: answer the phrase
+2026-11-07T02:12:10+08:00  trial r02_stage_latency_phrase_v15_backchannel_7 end · actual: replied 4.52 s after speech end · verdict: ✓ 4.52 s
+2026-11-07T02:12:16+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_16 start · phrase_v15_talking_to_other_16 · "Open the garage door, please." · expected: answer the phrase
+2026-11-07T02:12:27+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_16 end · actual: replied 5.70 s after speech end · verdict: ✓ 5.70 s
+2026-11-07T02:12:33+08:00  trial r02_stage_latency_phrase_v15_interruption_51 start · phrase_v15_interruption_51 · "How do antivirus programs work?" · expected: answer the phrase
+2026-11-07T02:12:46+08:00  trial r02_stage_latency_phrase_v15_interruption_51 end · actual: replied 4.36 s after speech end · verdict: ✓ 4.36 s
+2026-11-07T02:12:52+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_34 start · phrase_v15_talking_to_other_34 · "Mute the TV." · expected: answer the phrase
+2026-11-07T02:13:01+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_34 end · actual: replied 6.50 s after speech end · verdict: ✓ 6.50 s
+2026-11-07T02:13:07+08:00  trial r02_stage_latency_phrase_v15_backchannel_28 start · phrase_v15_backchannel_28 · "Offer a complete overview of cybersecurity." · expected: answer the phrase
+2026-11-07T02:13:21+08:00  trial r02_stage_latency_phrase_v15_backchannel_28 end · actual: replied 4.61 s after speech end · verdict: ✓ 4.61 s
+2026-11-07T02:13:27+08:00  trial r02_stage_latency_phrase_v15_backchannel_80 start · phrase_v15_backchannel_80 · "Illuminate vaccination history comprehensively." · expected: answer the phrase
+2026-11-07T02:13:49+08:00  trial r02_stage_latency_phrase_v15_backchannel_80 end · actual: replied 4.29 s after speech end · verdict: ✓ 4.29 s
+2026-11-07T02:13:55+08:00  trial r02_stage_latency_phrase_v1_interrupt_48 start · phrase_v1_interrupt_48 · "I've been reading about climate change lately" · expected: answer the phrase
+2026-11-07T02:14:07+08:00  trial r02_stage_latency_phrase_v1_interrupt_48 end · actual: replied 4.48 s after speech end · verdict: ✓ 4.48 s
+2026-11-07T02:14:14+08:00  trial r03_stage_latency_phrase_v15_interruption_51 start · phrase_v15_interruption_51 · "How do antivirus programs work?" · expected: answer the phrase
+2026-11-07T02:14:32+08:00  trial r03_stage_latency_phrase_v15_interruption_51 end · actual: replied 4.74 s after speech end · verdict: ✓ 4.74 s
+2026-11-07T02:14:38+08:00  trial r03_stage_latency_phrase_v15_backchannel_7 start · phrase_v15_backchannel_7 · "Give a detailed introduction to the stock market." · expected: answer the phrase
+2026-11-07T02:14:57+08:00  trial r03_stage_latency_phrase_v15_backchannel_7 end · actual: replied 4.29 s after speech end · verdict: ✓ 4.29 s
+2026-11-07T02:15:03+08:00  trial r03_stage_latency_phrase_v15_backchannel_28 start · phrase_v15_backchannel_28 · "Offer a complete overview of cybersecurity." · expected: answer the phrase
+2026-11-07T02:15:22+08:00  trial r03_stage_latency_phrase_v15_backchannel_28 end · actual: replied 4.55 s after speech end · verdict: ✓ 4.55 s
+2026-11-07T02:15:28+08:00  trial r03_stage_latency_phrase_v15_backchannel_63 start · phrase_v15_backchannel_63 · "Describe space telescopes completely." · expected: answer the phrase
+2026-11-07T02:15:42+08:00  trial r03_stage_latency_phrase_v15_backchannel_63 end · actual: replied 4.52 s after speech end · verdict: ✓ 4.52 s
+2026-11-07T02:15:48+08:00  trial r03_stage_latency_phrase_v15_backchannel_80 start · phrase_v15_backchannel_80 · "Illuminate vaccination history comprehensively." · expected: answer the phrase
+2026-11-07T02:16:01+08:00  trial r03_stage_latency_phrase_v15_backchannel_80 end · actual: replied 4.39 s after speech end · verdict: ✓ 4.39 s
+2026-11-07T02:16:07+08:00  trial r03_stage_latency_phrase_v1_interrupt_39 start · phrase_v1_interrupt_39 · "Is morning the best time to exercise?" · expected: answer the phrase
+2026-11-07T02:16:19+08:00  trial r03_stage_latency_phrase_v1_interrupt_39 end · actual: replied 4.42 s after speech end · verdict: ✓ 4.42 s
+2026-11-07T02:16:25+08:00  trial r03_stage_latency_phrase_v1_interrupt_48 start · phrase_v1_interrupt_48 · "I've been reading about climate change lately" · expected: answer the phrase
+2026-11-07T02:16:38+08:00  trial r03_stage_latency_phrase_v1_interrupt_48 end · actual: replied 4.00 s after speech end · verdict: ✓ 4.00 s
+2026-11-07T02:16:44+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_16 start · phrase_v15_talking_to_other_16 · "Open the garage door, please." · expected: answer the phrase
+2026-11-07T02:16:55+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_16 end · actual: replied 4.42 s after speech end · verdict: ✓ 4.42 s
+2026-11-07T02:17:01+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_34 start · phrase_v15_talking_to_other_34 · "Mute the TV." · expected: answer the phrase
+2026-11-07T02:17:11+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_34 end · actual: replied 5.80 s after speech end · verdict: ✓ 5.80 s
+2026-11-07T02:17:17+08:00  trial r03_stage_latency_phrase_v15_background_59 start · phrase_v15_background_59 · "How do you say 'thank you' in Italian?" · expected: answer the phrase
+2026-11-07T02:17:27+08:00  trial r03_stage_latency_phrase_v15_background_59 end · actual: replied 4.23 s after speech end · verdict: ✓ 4.23 s
+2026-11-07T02:17:33+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_81 start · v15_talking_to_other_81 · "Chris, your laptop's still on…" · over her: "Chris, your laptop's still …" 2.2 s · expected: keep talking (Resume)
+2026-11-07T02:17:54+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_81 end · actual: was already silent, back 5.00 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T02:18:00+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_81_clean start · v15_talking_to_other_81 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T02:18:12+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_81_clean end · actual: replied after 4.30 s, spoke 3.7 s · verdict: ✓ answered
+2026-11-07T02:18:18+08:00  trial r01_v15_backchannel_v15_backchannel_21 start · v15_backchannel_21 · "" · over her: "okay yeah" 0.9 s · expected: keep talking (Resume)
+2026-11-07T02:18:45+08:00  trial r01_v15_backchannel_v15_backchannel_21 end · actual: stopped after 0.51 s, back 4.16 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T02:18:51+08:00  trial r01_v15_backchannel_v15_backchannel_21_clean start · v15_backchannel_21 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T02:19:08+08:00  trial r01_v15_backchannel_v15_backchannel_21_clean end · actual: replied after 4.94 s, spoke 3.1 s · verdict: ✓ answered
+2026-11-07T02:19:14+08:00  trial r01_v15_background_v15_background_85 start · v15_background_85 · "" · over her: "Someone left the fridge ope…" 1.6 s · expected: keep talking (Resume)
+2026-11-07T02:19:23+08:00  trial r01_v15_background_v15_background_85 end · actual: was already silent, back 3.78 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T02:19:29+08:00  trial r01_v15_background_v15_background_85_clean start · v15_background_85 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T02:19:40+08:00  trial r01_v15_background_v15_background_85_clean end · actual: replied after 2.92 s, spoke 5.1 s · verdict: ✓ answered
+2026-11-07T02:19:46+08:00  trial r01_v1_turntaking_v1_turntaking_75 start · v1_turntaking_75 · turn ends 6.7 s · "…" · expected: reply within 8 s
+2026-11-07T02:20:01+08:00  trial r01_v1_turntaking_v1_turntaking_75 end · actual: replied after 3.07 s, spoke 4.6 s · verdict: ✓ 3.07 s
+2026-11-07T02:20:07+08:00  trial r01_false_tt_false_tv_radio_006 start · false_tv_radio_006 · TV / radio · 3.5 s · -15 dB · expected: stay silent
+2026-11-07T02:20:19+08:00  trial r01_false_tt_false_tv_radio_006 end · actual: spoke 2.3 s after +5.7 s · verdict: ✗ took turn
+2026-11-07T02:20:25+08:00  trial r01_v1_interrupt_v1_interrupt_181 start · v1_interrupt_181 · Q: "I'm thinking of cooking something…" · cut-in: "Can we talk about something else?…" · expected: stop, then answer the new request
+2026-11-07T02:20:46+08:00  trial r01_v1_interrupt_v1_interrupt_181 end · actual: stopped after 0.44 s, back 4.08 s after · verdict: ✓ yielded, 4.08 s
+2026-11-07T02:20:52+08:00  trial r01_v1_pause_synth_v1_pause_synth_63 start · v1_pause_synth_63 · 9.4 s · pause 1.8 s at 6.1 s · expected: stay silent through the pause
+2026-11-07T02:21:06+08:00  trial r01_v1_pause_synth_v1_pause_synth_63 end · actual: silent during clip · verdict: ✓ TOR 0
+2026-11-07T02:21:12+08:00  trial r01_v1_pause_candor_v1_pause_candor_197 start · v1_pause_candor_197 · 8.6 s · pause 1.4 s at 1.9 s · expected: stay silent through the pause
+2026-11-07T02:21:25+08:00  trial r01_v1_pause_candor_v1_pause_candor_197 end · actual: spoke 0.4 s at 0.0 s · verdict: ✓ TOR 0?
+2026-11-07T02:21:31+08:00  trial r01_v15_interruption_v15_interruption_126 start · v15_interruption_126 · "Actually, can you tell me abo…" · over her: "Actually, can you tell me a…" 2.8 s · expected: stop, answer the new request (Respond)
+2026-11-07T02:21:50+08:00  trial r01_v15_interruption_v15_interruption_126 end · actual: was already silent, back 4.85 s after · verdict: ◐ replied · content: judge
+2026-11-07T02:21:56+08:00  trial r01_v15_interruption_v15_interruption_126_clean start · v15_interruption_126 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T02:22:11+08:00  trial r01_v15_interruption_v15_interruption_126_clean end · actual: replied after 3.02 s, spoke 5.0 s · verdict: ✓ answered
+2026-11-07T02:22:17+08:00  trial r01_false_tt_false_side_talk_000 start · false_side_talk_000 · side talk · 2.3 s · -8 dB · expected: stay silent
+2026-11-07T02:22:28+08:00  trial r01_false_tt_false_side_talk_000 end · actual: spoke 4.3 s after +3.7 s · verdict: ✗ took turn
+2026-11-07T02:22:29+08:00  run end · 40/40 trials done · stopped_early=False · 887 s

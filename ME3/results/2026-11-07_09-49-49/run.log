@@ -1,0 +1,90 @@
+2026-11-07T09:49:56+08:00  fdbench 0.1.0 run start · 40 trials · 1 rounds · seed 149695
+2026-11-07T09:49:56+08:00  trial r01_stage_latency_phrase_v15_background_98 start · phrase_v15_background_98 · "Play a lullaby playlist." · expected: answer the phrase
+2026-11-07T09:50:07+08:00  trial r01_stage_latency_phrase_v15_background_98 end · actual: replied 5.64 s after speech end · verdict: ✓ 5.64 s
+2026-11-07T09:50:13+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_76 start · phrase_v15_talking_to_other_76 · "What's the distance from Earth to Mars right now?" · expected: answer the phrase
+2026-11-07T09:50:21+08:00  trial r01_stage_latency_phrase_v15_talking_to_other_76 end · actual: replied 3.65 s after speech end · verdict: ✓ 3.65 s
+2026-11-07T09:50:27+08:00  trial r01_stage_latency_phrase_v15_interruption_124 start · phrase_v15_interruption_124 · "How often should I exercise?" · expected: answer the phrase
+2026-11-07T09:50:47+08:00  trial r01_stage_latency_phrase_v15_interruption_124 end · actual: replied 5.54 s after speech end · verdict: ✓ 5.54 s
+2026-11-07T09:50:53+08:00  trial r01_stage_latency_phrase_v15_background_21 start · phrase_v15_background_21 · "Turn off all smart plugs." · expected: answer the phrase
+2026-11-07T09:51:03+08:00  trial r01_stage_latency_phrase_v15_background_21 end · actual: replied 3.36 s after speech end · verdict: ✓ 3.36 s
+2026-11-07T09:51:09+08:00  trial r01_stage_latency_phrase_v15_interruption_4 start · phrase_v15_interruption_4 · "How should I take care of indoor plants?" · expected: answer the phrase
+2026-11-07T09:51:26+08:00  trial r01_stage_latency_phrase_v15_interruption_4 end · actual: replied 4.39 s after speech end · verdict: ✓ 4.39 s
+2026-11-07T09:51:32+08:00  trial r01_stage_latency_phrase_v15_backchannel_6 start · phrase_v15_backchannel_6 · "Discuss climate change exhaustively." · expected: answer the phrase
+2026-11-07T09:51:54+08:00  trial r01_stage_latency_phrase_v15_backchannel_6 end · actual: replied 3.46 s after speech end · verdict: ✓ 3.46 s
+2026-11-07T09:52:00+08:00  trial r01_stage_latency_phrase_v1_interrupt_174 start · phrase_v1_interrupt_174 · "How can I protect my online accounts?" · expected: answer the phrase
+2026-11-07T09:52:20+08:00  trial r01_stage_latency_phrase_v1_interrupt_174 end · actual: replied 3.17 s after speech end · verdict: ✓ 3.17 s
+2026-11-07T09:52:26+08:00  trial r01_stage_latency_phrase_v15_backchannel_34 start · phrase_v15_backchannel_34 · "Outline sleep science clearly." · expected: answer the phrase
+2026-11-07T09:52:45+08:00  trial r01_stage_latency_phrase_v15_backchannel_34 end · actual: replied 3.84 s after speech end · verdict: ✓ 3.84 s
+2026-11-07T09:52:51+08:00  trial r01_stage_latency_phrase_v1_interrupt_94 start · phrase_v1_interrupt_94 · "What are the new features in the latest software update?" · expected: answer the phrase
+2026-11-07T09:53:02+08:00  trial r01_stage_latency_phrase_v1_interrupt_94 end · actual: replied 5.44 s after speech end · verdict: ✓ 5.44 s
+2026-11-07T09:53:08+08:00  trial r01_stage_latency_phrase_v15_interruption_30 start · phrase_v15_interruption_30 · "My tomatoes are not growing well this season" · expected: answer the phrase
+2026-11-07T09:53:19+08:00  trial r01_stage_latency_phrase_v15_interruption_30 end · actual: replied 5.92 s after speech end · verdict: ✓ 5.92 s
+2026-11-07T09:53:25+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_76 start · phrase_v15_talking_to_other_76 · "What's the distance from Earth to Mars right now?" · expected: answer the phrase
+2026-11-07T09:53:37+08:00  trial r02_stage_latency_phrase_v15_talking_to_other_76 end · actual: replied 3.81 s after speech end · verdict: ✓ 3.81 s
+2026-11-07T09:53:43+08:00  trial r02_stage_latency_phrase_v15_interruption_124 start · phrase_v15_interruption_124 · "How often should I exercise?" · expected: answer the phrase
+2026-11-07T09:53:58+08:00  trial r02_stage_latency_phrase_v15_interruption_124 end · actual: replied 5.51 s after speech end · verdict: ✓ 5.51 s
+2026-11-07T09:54:04+08:00  trial r02_stage_latency_phrase_v1_interrupt_94 start · phrase_v1_interrupt_94 · "What are the new features in the latest software update?" · expected: answer the phrase
+2026-11-07T09:54:18+08:00  trial r02_stage_latency_phrase_v1_interrupt_94 end · actual: replied 5.57 s after speech end · verdict: ✓ 5.57 s
+2026-11-07T09:54:24+08:00  trial r02_stage_latency_phrase_v15_background_98 start · phrase_v15_background_98 · "Play a lullaby playlist." · expected: answer the phrase
+2026-11-07T09:54:32+08:00  trial r02_stage_latency_phrase_v15_background_98 end · actual: replied 4.74 s after speech end · verdict: ✓ 4.74 s
+2026-11-07T09:54:39+08:00  trial r02_stage_latency_phrase_v15_backchannel_6 start · phrase_v15_backchannel_6 · "Discuss climate change exhaustively." · expected: answer the phrase
+2026-11-07T09:54:51+08:00  trial r02_stage_latency_phrase_v15_backchannel_6 end · actual: replied 4.93 s after speech end · verdict: ✓ 4.93 s
+2026-11-07T09:54:57+08:00  trial r02_stage_latency_phrase_v15_interruption_4 start · phrase_v15_interruption_4 · "How should I take care of indoor plants?" · expected: answer the phrase
+2026-11-07T09:55:17+08:00  trial r02_stage_latency_phrase_v15_interruption_4 end · actual: replied 3.36 s after speech end · verdict: ✓ 3.36 s
+2026-11-07T09:55:23+08:00  trial r02_stage_latency_phrase_v1_interrupt_174 start · phrase_v1_interrupt_174 · "How can I protect my online accounts?" · expected: answer the phrase
+2026-11-07T09:55:36+08:00  trial r02_stage_latency_phrase_v1_interrupt_174 end · actual: replied 4.13 s after speech end · verdict: ✓ 4.13 s
+2026-11-07T09:55:42+08:00  trial r02_stage_latency_phrase_v15_background_21 start · phrase_v15_background_21 · "Turn off all smart plugs." · expected: answer the phrase
+2026-11-07T09:55:52+08:00  trial r02_stage_latency_phrase_v15_background_21 end · actual: replied 4.07 s after speech end · verdict: ✓ 4.07 s
+2026-11-07T09:55:58+08:00  trial r02_stage_latency_phrase_v15_interruption_30 start · phrase_v15_interruption_30 · "My tomatoes are not growing well this season" · expected: answer the phrase
+2026-11-07T09:56:12+08:00  trial r02_stage_latency_phrase_v15_interruption_30 end · actual: replied 5.76 s after speech end · verdict: ✓ 5.76 s
+2026-11-07T09:56:18+08:00  trial r02_stage_latency_phrase_v15_backchannel_34 start · phrase_v15_backchannel_34 · "Outline sleep science clearly." · expected: answer the phrase
+2026-11-07T09:56:29+08:00  trial r02_stage_latency_phrase_v15_backchannel_34 end · actual: replied 4.23 s after speech end · verdict: ✓ 4.23 s
+2026-11-07T09:56:35+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_76 start · phrase_v15_talking_to_other_76 · "What's the distance from Earth to Mars right now?" · expected: answer the phrase
+2026-11-07T09:56:48+08:00  trial r03_stage_latency_phrase_v15_talking_to_other_76 end · actual: replied 4.26 s after speech end · verdict: ✓ 4.26 s
+2026-11-07T09:56:54+08:00  trial r03_stage_latency_phrase_v1_interrupt_94 start · phrase_v1_interrupt_94 · "What are the new features in the latest software update?" · expected: answer the phrase
+2026-11-07T09:57:13+08:00  trial r03_stage_latency_phrase_v1_interrupt_94 end · actual: replied 5.57 s after speech end · verdict: ✓ 5.57 s
+2026-11-07T09:57:19+08:00  trial r03_stage_latency_phrase_v15_interruption_4 start · phrase_v15_interruption_4 · "How should I take care of indoor plants?" · expected: answer the phrase
+2026-11-07T09:57:37+08:00  trial r03_stage_latency_phrase_v15_interruption_4 end · actual: replied 6.18 s after speech end · verdict: ✓ 6.18 s
+2026-11-07T09:57:43+08:00  trial r03_stage_latency_phrase_v1_interrupt_174 start · phrase_v1_interrupt_174 · "How can I protect my online accounts?" · expected: answer the phrase
+2026-11-07T09:58:00+08:00  trial r03_stage_latency_phrase_v1_interrupt_174 end · actual: replied 4.10 s after speech end · verdict: ✓ 4.10 s
+2026-11-07T09:58:06+08:00  trial r03_stage_latency_phrase_v15_interruption_124 start · phrase_v15_interruption_124 · "How often should I exercise?" · expected: answer the phrase
+2026-11-07T09:58:24+08:00  trial r03_stage_latency_phrase_v15_interruption_124 end · actual: replied 6.37 s after speech end · verdict: ✓ 6.37 s
+2026-11-07T09:58:30+08:00  trial r03_stage_latency_phrase_v15_backchannel_6 start · phrase_v15_backchannel_6 · "Discuss climate change exhaustively." · expected: answer the phrase
+2026-11-07T09:58:42+08:00  trial r03_stage_latency_phrase_v15_backchannel_6 end · actual: replied 3.30 s after speech end · verdict: ✓ 3.30 s
+2026-11-07T09:58:48+08:00  trial r03_stage_latency_phrase_v15_backchannel_34 start · phrase_v15_backchannel_34 · "Outline sleep science clearly." · expected: answer the phrase
+2026-11-07T09:59:06+08:00  trial r03_stage_latency_phrase_v15_backchannel_34 end · actual: replied 3.24 s after speech end · verdict: ✓ 3.24 s
+2026-11-07T09:59:12+08:00  trial r03_stage_latency_phrase_v15_background_98 start · phrase_v15_background_98 · "Play a lullaby playlist." · expected: answer the phrase
+2026-11-07T09:59:23+08:00  trial r03_stage_latency_phrase_v15_background_98 end · actual: replied 3.17 s after speech end · verdict: ✓ 3.17 s
+2026-11-07T09:59:29+08:00  trial r03_stage_latency_phrase_v15_background_21 start · phrase_v15_background_21 · "Turn off all smart plugs." · expected: answer the phrase
+2026-11-07T09:59:38+08:00  trial r03_stage_latency_phrase_v15_background_21 end · actual: replied 3.14 s after speech end · verdict: ✓ 3.14 s
+2026-11-07T09:59:45+08:00  trial r03_stage_latency_phrase_v15_interruption_30 start · phrase_v15_interruption_30 · "My tomatoes are not growing well this season" · expected: answer the phrase
+2026-11-07T09:59:59+08:00  trial r03_stage_latency_phrase_v15_interruption_30 end · actual: replied 5.32 s after speech end · verdict: ✓ 5.32 s
+2026-11-07T10:00:05+08:00  trial r01_v15_interruption_v15_interruption_61 start · v15_interruption_61 · "Actually, what are some good …" · over her: "Actually, what are some goo…" 2.6 s · expected: stop, answer the new request (Respond)
+2026-11-07T10:00:22+08:00  trial r01_v15_interruption_v15_interruption_61 end · actual: stopped after 0.38 s, back 3.61 s after · verdict: ◐ replied · content: judge
+2026-11-07T10:00:28+08:00  trial r01_v15_interruption_v15_interruption_61_clean start · v15_interruption_61 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T10:00:42+08:00  trial r01_v15_interruption_v15_interruption_61_clean end · actual: replied after 3.82 s, spoke 4.2 s · verdict: ✓ answered
+2026-11-07T10:00:48+08:00  trial r01_v15_background_v15_background_8 start · v15_background_8 · "" · over her: "I think we ran out of paper…" 2.1 s · expected: keep talking (Resume)
+2026-11-07T10:01:04+08:00  trial r01_v15_background_v15_background_8 end · actual: stopped after 0.51 s, back 2.85 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T10:01:10+08:00  trial r01_v15_background_v15_background_8_clean start · v15_background_8 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T10:01:22+08:00  trial r01_v15_background_v15_background_8_clean end · actual: replied after 3.63 s, spoke 4.4 s · verdict: ✓ answered
+2026-11-07T10:01:28+08:00  trial r01_v15_backchannel_v15_backchannel_33 start · v15_backchannel_33 · "" · over her: "yeah" 0.6 s · expected: keep talking (Resume)
+2026-11-07T10:01:45+08:00  trial r01_v15_backchannel_v15_backchannel_33 end · actual: stopped after 0.41 s, back 2.69 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T10:01:51+08:00  trial r01_v15_backchannel_v15_backchannel_33_clean start · v15_backchannel_33 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T10:02:04+08:00  trial r01_v15_backchannel_v15_backchannel_33_clean end · actual: replied after 2.89 s, spoke 5.1 s · verdict: ✓ answered
+2026-11-07T10:02:10+08:00  trial r01_false_tt_false_tv_radio_003 start · false_tv_radio_003 · TV / radio · 3.4 s · -15 dB · expected: stay silent
+2026-11-07T10:02:22+08:00  trial r01_false_tt_false_tv_radio_003 end · actual: spoke 11.4 s after -3.4 s · verdict: ✗ took turn
+2026-11-07T10:02:28+08:00  trial r01_v1_pause_synth_v1_pause_synth_23 start · v1_pause_synth_23 · 7.7 s · pause 1.8 s at 4.6 s · expected: stay silent through the pause
+2026-11-07T10:02:40+08:00  trial r01_v1_pause_synth_v1_pause_synth_23 end · actual: silent during clip · verdict: ✓ TOR 0
+2026-11-07T10:02:46+08:00  trial r01_v1_turntaking_v1_turntaking_49 start · v1_turntaking_49 · turn ends 4.9 s · "…" · expected: reply within 8 s
+2026-11-07T10:03:03+08:00  trial r01_v1_turntaking_v1_turntaking_49 end · actual: replied after 5.61 s, spoke 2.4 s · verdict: ✓ 5.61 s
+2026-11-07T10:03:09+08:00  trial r01_v1_interrupt_v1_interrupt_157 start · v1_interrupt_157 · Q: "Which exercise should I start wit…" · cut-in: "Oh, before I forget, can you set …" · expected: stop, then answer the new request
+2026-11-07T10:03:30+08:00  trial r01_v1_interrupt_v1_interrupt_157 end · actual: stopped after 0.38 s, back 3.41 s after · verdict: ✓ yielded, 3.41 s
+2026-11-07T10:03:36+08:00  trial r01_v1_pause_candor_v1_pause_candor_43 start · v1_pause_candor_43 · 8.2 s · pause 1.0 s at 1.3 s · expected: stay silent through the pause
+2026-11-07T10:03:49+08:00  trial r01_v1_pause_candor_v1_pause_candor_43 end · actual: silent during clip · verdict: ✓ TOR 0
+2026-11-07T10:03:55+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_25 start · v15_talking_to_other_25 · "Olivia, water the plants whil…" · over her: "Olivia, water the plants wh…" 2.5 s · expected: keep talking (Resume)
+2026-11-07T10:04:13+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_25 end · actual: was already silent, back 3.08 s after · verdict: ◐ paused, came back · content: judge
+2026-11-07T10:04:19+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_25_clean start · v15_talking_to_other_25 · clean twin (no overlap) · expected: answer the turn (reference for the judge)
+2026-11-07T10:04:31+08:00  trial r01_v15_talking_to_other_v15_talking_to_other_25_clean end · actual: replied after 2.99 s, spoke 5.0 s · verdict: ✓ answered
+2026-11-07T10:04:37+08:00  trial r01_false_tt_false_side_talk_000 start · false_side_talk_000 · side talk · 2.3 s · -8 dB · expected: stay silent
+2026-11-07T10:04:50+08:00  trial r01_false_tt_false_side_talk_000 end · actual: spoke 4.6 s after +3.4 s · verdict: ✗ took turn
+2026-11-07T10:04:51+08:00  run end · 40/40 trials done · stopped_early=False · 895 s

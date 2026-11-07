@@ -1,0 +1,1097 @@
+{
+  "about": "Stage latency per turn (course template, section 5). Times in seconds on the assistant machine's monotonic clock; e2e = audio_out - vad_end; e2e_heard = reply audio start - true end of speech (fdbench's audio clock); endpointing = vad_end - true end of speech.",
+  "phrases": 10,
+  "runs": 3,
+  "turns": [
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_34",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_34",
+      "ref": "Outline sleep science clearly.",
+      "e2e": 3.5129,
+      "e2e_source": "marks",
+      "e2e_heard": 3.844,
+      "endpointing": 0.1093,
+      "asr_final": 1.2918,
+      "llm_ttft": 0.9543,
+      "tts_ttfb": 0.7899,
+      "transcript": "outline sleep science clearly",
+      "context_tokens": 2105,
+      "context_messages": 18,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_6",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_6",
+      "ref": "Discuss climate change exhaustively.",
+      "e2e": 3.0588,
+      "e2e_source": "marks",
+      "e2e_heard": 3.46,
+      "endpointing": 0.1428,
+      "asr_final": 1.3215,
+      "llm_ttft": 0.898,
+      "tts_ttfb": 0.7791,
+      "transcript": "discuss climate change exhaustively",
+      "context_tokens": 2003,
+      "context_messages": 14,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_background_21",
+      "run": 1,
+      "clip": "phrase_v15_background_21",
+      "ref": "Turn off all smart plugs.",
+      "e2e": 2.9935,
+      "e2e_source": "marks",
+      "e2e_heard": 3.364,
+      "endpointing": 0.1441,
+      "asr_final": 1.2366,
+      "llm_ttft": 0.9036,
+      "tts_ttfb": 0.735,
+      "transcript": "turn off all smart plugs",
+      "context_tokens": 1914,
+      "context_messages": 10,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_background_98",
+      "run": 1,
+      "clip": "phrase_v15_background_98",
+      "ref": "Play a lullaby playlist.",
+      "e2e": 3.9699,
+      "e2e_source": "marks",
+      "e2e_heard": 5.636,
+      "endpointing": 0.1417,
+      "asr_final": 1.328,
+      "llm_ttft": null,
+      "tts_ttfb": 0.7675,
+      "transcript": "play a lullaby playlist",
+      "context_tokens": 1197,
+      "context_messages": 1,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_interruption_124",
+      "run": 1,
+      "clip": "phrase_v15_interruption_124",
+      "ref": "How often should I exercise?",
+      "e2e": 5.0609,
+      "e2e_source": "marks",
+      "e2e_heard": 5.54,
+      "endpointing": 0.1458,
+      "asr_final": 1.2618,
+      "llm_ttft": 2.9228,
+      "tts_ttfb": 0.799,
+      "transcript": "how often should i exercise",
+      "context_tokens": 1865,
+      "context_messages": 8,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_interruption_30",
+      "run": 1,
+      "clip": "phrase_v15_interruption_30",
+      "ref": "My tomatoes are not growing well this season",
+      "e2e": 5.5263,
+      "e2e_source": "marks",
+      "e2e_heard": 5.924,
+      "endpointing": 0.1403,
+      "asr_final": 1.2217,
+      "llm_ttft": 3.4233,
+      "tts_ttfb": 0.7098,
+      "transcript": "my tomatoes are not growing well this season",
+      "context_tokens": 2705,
+      "context_messages": 23,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_interruption_4",
+      "run": 1,
+      "clip": "phrase_v15_interruption_4",
+      "ref": "How should I take care of indoor plants?",
+      "e2e": 3.9035,
+      "e2e_source": "marks",
+      "e2e_heard": 4.388,
+      "endpointing": 0.1124,
+      "asr_final": 1.263,
+      "llm_ttft": 1.5749,
+      "tts_ttfb": 0.7546,
+      "transcript": "how should i take care of indoor plant",
+      "context_tokens": 1949,
+      "context_messages": 12,
+      "wer": 0.125,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 1,
+        "wer": 0.125
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_talking_to_other_76",
+      "run": 1,
+      "clip": "phrase_v15_talking_to_other_76",
+      "ref": "What's the distance from Earth to Mars right now?",
+      "e2e": 3.4472,
+      "e2e_source": "marks",
+      "e2e_heard": 3.652,
+      "endpointing": 0.1106,
+      "asr_final": 1.2598,
+      "llm_ttft": null,
+      "tts_ttfb": 0.9585,
+      "transcript": "what's the distance from earth to mars right now",
+      "context_tokens": 1298,
+      "context_messages": 5,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 9,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v1_interrupt_174",
+      "run": 1,
+      "clip": "phrase_v1_interrupt_174",
+      "ref": "How can I protect my online accounts?",
+      "e2e": 2.9148,
+      "e2e_source": "marks",
+      "e2e_heard": 3.172,
+      "endpointing": 0.1415,
+      "asr_final": 1.2374,
+      "llm_ttft": 1.2147,
+      "tts_ttfb": 0.3464,
+      "transcript": "how can i protect my online account",
+      "context_tokens": 2055,
+      "context_messages": 16,
+      "wer": 0.14285714285714285,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 1,
+        "wer": 0.14285714285714285
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v1_interrupt_94",
+      "run": 1,
+      "clip": "phrase_v1_interrupt_94",
+      "ref": "What are the new features in the latest software update?",
+      "e2e": 4.9818,
+      "e2e_source": "marks",
+      "e2e_heard": 5.444,
+      "endpointing": 0.1112,
+      "asr_final": 1.305,
+      "llm_ttft": null,
+      "tts_ttfb": 0.767,
+      "transcript": "what are the new features and the latest software up",
+      "context_tokens": 2174,
+      "context_messages": 20,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 10,
+        "edits": 2,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_34",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_34",
+      "ref": "Outline sleep science clearly.",
+      "e2e": 3.8174,
+      "e2e_source": "marks",
+      "e2e_heard": 4.228,
+      "endpointing": 0.1137,
+      "asr_final": 1.5246,
+      "llm_ttft": 1.1827,
+      "tts_ttfb": 1.0497,
+      "transcript": "outline sleep science clearly",
+      "context_tokens": 3165,
+      "context_messages": 45,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_6",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_6",
+      "ref": "Discuss climate change exhaustively.",
+      "e2e": 4.4717,
+      "e2e_source": "marks",
+      "e2e_heard": 4.932,
+      "endpointing": 0.1474,
+      "asr_final": 1.5231,
+      "llm_ttft": 1.7693,
+      "tts_ttfb": 1.0775,
+      "transcript": "discuss climate change exhaustively",
+      "context_tokens": 2959,
+      "context_messages": 35,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_background_21",
+      "run": 2,
+      "clip": "phrase_v15_background_21",
+      "ref": "Turn off all smart plugs.",
+      "e2e": 3.804,
+      "e2e_source": "marks",
+      "e2e_heard": 4.068,
+      "endpointing": 0.142,
+      "asr_final": 1.5758,
+      "llm_ttft": 1.0439,
+      "tts_ttfb": 0.9768,
+      "transcript": "turn off all smart plugs",
+      "context_tokens": 3094,
+      "context_messages": 41,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_background_98",
+      "run": 2,
+      "clip": "phrase_v15_background_98",
+      "ref": "Play a lullaby playlist.",
+      "e2e": 4.3747,
+      "e2e_source": "marks",
+      "e2e_heard": 4.74,
+      "endpointing": 0.1432,
+      "asr_final": 1.5142,
+      "llm_ttft": null,
+      "tts_ttfb": 1.0042,
+      "transcript": "play a lullaby playlist",
+      "context_tokens": 2862,
+      "context_messages": 31,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_interruption_124",
+      "run": 2,
+      "clip": "phrase_v15_interruption_124",
+      "ref": "How often should I exercise?",
+      "e2e": 5.0988,
+      "e2e_source": "marks",
+      "e2e_heard": 5.508,
+      "endpointing": 0.1467,
+      "asr_final": 1.5688,
+      "llm_ttft": 2.364,
+      "tts_ttfb": 1.0245,
+      "transcript": "how often should i exercise",
+      "context_tokens": 2786,
+      "context_messages": 27,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_interruption_30",
+      "run": 2,
+      "clip": "phrase_v15_interruption_30",
+      "ref": "My tomatoes are not growing well this season",
+      "e2e": 5.3377,
+      "e2e_source": "marks",
+      "e2e_heard": 5.764,
+      "endpointing": 0.1497,
+      "asr_final": 1.5245,
+      "llm_ttft": 2.7277,
+      "tts_ttfb": 1.0363,
+      "transcript": "my tomatoes are not growing well this season",
+      "context_tokens": 3123,
+      "context_messages": 43,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_interruption_4",
+      "run": 2,
+      "clip": "phrase_v15_interruption_4",
+      "ref": "How should I take care of indoor plants?",
+      "e2e": 2.955,
+      "e2e_source": "marks",
+      "e2e_heard": 3.364,
+      "endpointing": 0.1128,
+      "asr_final": 1.5315,
+      "llm_ttft": 0.9213,
+      "tts_ttfb": 0.3658,
+      "transcript": "how should i take care of indoor plant",
+      "context_tokens": 2997,
+      "context_messages": 37,
+      "wer": 0.125,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 1,
+        "wer": 0.125
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_talking_to_other_76",
+      "run": 2,
+      "clip": "phrase_v15_talking_to_other_76",
+      "ref": "What's the distance from Earth to Mars right now?",
+      "e2e": 3.4962,
+      "e2e_source": "marks",
+      "e2e_heard": 3.812,
+      "endpointing": 0.1109,
+      "asr_final": 1.3075,
+      "llm_ttft": 1.0326,
+      "tts_ttfb": 1.0516,
+      "transcript": "what's the distance from earth to mars right now",
+      "context_tokens": 2742,
+      "context_messages": 25,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 9,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v1_interrupt_174",
+      "run": 2,
+      "clip": "phrase_v1_interrupt_174",
+      "ref": "How can I protect my online accounts?",
+      "e2e": 3.7812,
+      "e2e_source": "marks",
+      "e2e_heard": 4.132,
+      "endpointing": 0.1495,
+      "asr_final": 1.5448,
+      "llm_ttft": 1.0463,
+      "tts_ttfb": 1.0082,
+      "transcript": "how can i protect my online account",
+      "context_tokens": 3052,
+      "context_messages": 39,
+      "wer": 0.14285714285714285,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 1,
+        "wer": 0.14285714285714285
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v1_interrupt_94",
+      "run": 2,
+      "clip": "phrase_v1_interrupt_94",
+      "ref": "What are the new features in the latest software update?",
+      "e2e": 5.2684,
+      "e2e_source": "marks",
+      "e2e_heard": 5.572,
+      "endpointing": 0.1126,
+      "asr_final": 1.5131,
+      "llm_ttft": 2.607,
+      "tts_ttfb": 1.0327,
+      "transcript": "what are the new features and the latest software up",
+      "context_tokens": 2834,
+      "context_messages": 29,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 10,
+        "edits": 2,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_34",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_34",
+      "ref": "Outline sleep science clearly.",
+      "e2e": 2.8301,
+      "e2e_source": "marks",
+      "e2e_heard": 3.236,
+      "endpointing": 0.141,
+      "asr_final": 1.2016,
+      "llm_ttft": 1.1854,
+      "tts_ttfb": 0.3141,
+      "transcript": "outline sleep science clearly",
+      "context_tokens": 3444,
+      "context_messages": 59,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_6",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_6",
+      "ref": "Discuss climate change exhaustively.",
+      "e2e": 2.9946,
+      "e2e_source": "marks",
+      "e2e_heard": 3.3,
+      "endpointing": 0.1449,
+      "asr_final": 0.9925,
+      "llm_ttft": 1.0473,
+      "tts_ttfb": 0.8931,
+      "transcript": "discuss climate change exhaustively",
+      "context_tokens": 3423,
+      "context_messages": 57,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_background_21",
+      "run": 3,
+      "clip": "phrase_v15_background_21",
+      "ref": "Turn off all smart plugs.",
+      "e2e": 2.7424,
+      "e2e_source": "marks",
+      "e2e_heard": 3.14,
+      "endpointing": 0.1418,
+      "asr_final": 0.8423,
+      "llm_ttft": 1.0087,
+      "tts_ttfb": 0.6762,
+      "transcript": "turn off all smart plugs",
+      "context_tokens": 3535,
+      "context_messages": 63,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_background_98",
+      "run": 3,
+      "clip": "phrase_v15_background_98",
+      "ref": "Play a lullaby playlist.",
+      "e2e": 2.6605,
+      "e2e_source": "marks",
+      "e2e_heard": 3.172,
+      "endpointing": 0.1421,
+      "asr_final": 0.9471,
+      "llm_ttft": 1.0232,
+      "tts_ttfb": 0.616,
+      "transcript": "play a lullaby playlist",
+      "context_tokens": 3497,
+      "context_messages": 61,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_interruption_124",
+      "run": 3,
+      "clip": "phrase_v15_interruption_124",
+      "ref": "How often should I exercise?",
+      "e2e": 5.8817,
+      "e2e_source": "marks",
+      "e2e_heard": 6.372,
+      "endpointing": 0.1417,
+      "asr_final": 1.5655,
+      "llm_ttft": 3.0322,
+      "tts_ttfb": 1.0563,
+      "transcript": "how often should i exercise",
+      "context_tokens": 3379,
+      "context_messages": 55,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_interruption_30",
+      "run": 3,
+      "clip": "phrase_v15_interruption_30",
+      "ref": "My tomatoes are not growing well this season",
+      "e2e": 4.8242,
+      "e2e_source": "marks",
+      "e2e_heard": 5.316,
+      "endpointing": 0.1442,
+      "asr_final": 1.0003,
+      "llm_ttft": 2.9988,
+      "tts_ttfb": 0.6492,
+      "transcript": "my tomatoes are not growing well this season",
+      "context_tokens": 3564,
+      "context_messages": 65,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_interruption_4",
+      "run": 3,
+      "clip": "phrase_v15_interruption_4",
+      "ref": "How should I take care of indoor plants?",
+      "e2e": 5.7517,
+      "e2e_source": "marks",
+      "e2e_heard": 6.18,
+      "endpointing": 0.1128,
+      "asr_final": 1.6678,
+      "llm_ttft": 2.9638,
+      "tts_ttfb": 1.0072,
+      "transcript": "how should i take care of indoor plant",
+      "context_tokens": 3282,
+      "context_messages": 51,
+      "wer": 0.125,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 1,
+        "wer": 0.125
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_talking_to_other_76",
+      "run": 3,
+      "clip": "phrase_v15_talking_to_other_76",
+      "ref": "What's the distance from Earth to Mars right now?",
+      "e2e": 3.8009,
+      "e2e_source": "marks",
+      "e2e_heard": 4.26,
+      "endpointing": 0.1148,
+      "asr_final": 1.4991,
+      "llm_ttft": 1.075,
+      "tts_ttfb": 1.0054,
+      "transcript": "what's the distance from earth to mars right now",
+      "context_tokens": 3206,
+      "context_messages": 47,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 9,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v1_interrupt_174",
+      "run": 3,
+      "clip": "phrase_v1_interrupt_174",
+      "ref": "How can I protect my online accounts?",
+      "e2e": 3.9136,
+      "e2e_source": "marks",
+      "e2e_heard": 4.1,
+      "endpointing": 0.1419,
+      "asr_final": 1.5266,
+      "llm_ttft": 1.2207,
+      "tts_ttfb": 1.0381,
+      "transcript": "how can i protect my online account",
+      "context_tokens": 3337,
+      "context_messages": 53,
+      "wer": 0.14285714285714285,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 1,
+        "wer": 0.14285714285714285
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v1_interrupt_94",
+      "run": 3,
+      "clip": "phrase_v1_interrupt_94",
+      "ref": "What are the new features in the latest software update?",
+      "e2e": 5.2946,
+      "e2e_source": "marks",
+      "e2e_heard": 5.572,
+      "endpointing": 0.1094,
+      "asr_final": 1.5822,
+      "llm_ttft": 2.6052,
+      "tts_ttfb": 1.0332,
+      "transcript": "what are the new features and the latest software up",
+      "context_tokens": 3240,
+      "context_messages": 49,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 10,
+        "edits": 2,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    }
+  ],
+  "per_run": {
+    "1": {
+      "e2e": {
+        "n": 10,
+        "median": 3.7082,
+        "p95": 5.31687,
+        "mean": 3.93696,
+        "min": 2.9148,
+        "max": 5.5263,
+        "ci95_median": [
+          3.0588,
+          4.9818
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.2624,
+        "p95": 1.325075,
+        "mean": 1.2726600000000001,
+        "min": 1.2217,
+        "max": 1.328,
+        "ci95_median": [
+          1.2374,
+          1.305
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 7,
+        "median": 1.2147,
+        "p95": 3.2731499999999993,
+        "mean": 1.6988,
+        "min": 0.898,
+        "max": 3.4233,
+        "ci95_median": [
+          0.9036,
+          2.9228
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 0.76725,
+        "p95": 0.8867249999999999,
+        "mean": 0.74068,
+        "min": 0.3464,
+        "max": 0.9585,
+        "ci95_median": [
+          0.7322,
+          0.7899
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    },
+    "2": {
+      "e2e": {
+        "n": 10,
+        "median": 4.09605,
+        "p95": 5.306515,
+        "mean": 4.24051,
+        "min": 2.955,
+        "max": 5.3377,
+        "ci95_median": [
+          3.6566325,
+          5.0988
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.52455,
+        "p95": 1.57265,
+        "mean": 1.51279,
+        "min": 1.3075,
+        "max": 1.5758,
+        "ci95_median": [
+          1.5142,
+          1.55015
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 9,
+        "median": 1.1827,
+        "p95": 2.67942,
+        "mean": 1.6327555555555557,
+        "min": 0.9213,
+        "max": 2.7277,
+        "ci95_median": [
+          1.0439,
+          2.364
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 1.0286,
+        "p95": 1.065845,
+        "mean": 0.96273,
+        "min": 0.3658,
+        "max": 1.0775,
+        "ci95_median": [
+          1.00411125,
+          1.0497
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    },
+    "3": {
+      "e2e": {
+        "n": 10,
+        "median": 3.85725,
+        "p95": 5.8232,
+        "mean": 4.06943,
+        "min": 2.6605,
+        "max": 5.8817,
+        "ci95_median": [
+          2.8301,
+          5.2946
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.3503500000000002,
+        "p95": 1.6292799999999998,
+        "mean": 1.2825000000000002,
+        "min": 0.8423,
+        "max": 1.6678,
+        "ci95_median": [
+          0.9925,
+          1.5655
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 10,
+        "median": 1.20305,
+        "p95": 3.01717,
+        "mean": 1.81603,
+        "min": 1.0087,
+        "max": 3.0322,
+        "ci95_median": [
+          1.0473,
+          2.9638
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 0.94925,
+        "p95": 1.04811,
+        "mean": 0.8288799999999998,
+        "min": 0.3141,
+        "max": 1.0563,
+        "ci95_median": [
+          0.6461,
+          1.0332
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    }
+  }
+}

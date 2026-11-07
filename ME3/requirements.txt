@@ -1,0 +1,4 @@
+pipecat-ai[silero,websocket,mcp,openai,anthropic,local]==1.15.0
+python-dotenv
+httpx
+tzdata

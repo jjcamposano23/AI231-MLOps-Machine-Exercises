@@ -1,0 +1,1100 @@
+{
+  "about": "Stage latency per turn (course template, section 5). Times in seconds on the assistant machine's monotonic clock; e2e = audio_out - vad_end; e2e_heard = reply audio start - true end of speech (fdbench's audio clock); endpointing = vad_end - true end of speech.",
+  "phrases": 10,
+  "runs": 3,
+  "turns": [
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_28",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_28",
+      "ref": "Offer a complete overview of cybersecurity.",
+      "e2e": 3.6339,
+      "e2e_source": "marks",
+      "e2e_heard": 3.812,
+      "endpointing": 0.1439,
+      "asr_final": 1.5889,
+      "llm_ttft": 0.9003,
+      "tts_ttfb": 1.0224,
+      "transcript": "offer a complete overview of cybersecurity",
+      "context_tokens": 1232,
+      "context_messages": 3,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 6,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_63",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_63",
+      "ref": "Describe space telescopes completely.",
+      "e2e": 3.8019,
+      "e2e_source": "marks",
+      "e2e_heard": 4.068,
+      "endpointing": 0.1504,
+      "asr_final": 1.5816,
+      "llm_ttft": 1.0878,
+      "tts_ttfb": 0.9905,
+      "transcript": "describe space telescopes completely",
+      "context_tokens": 1567,
+      "context_messages": 19,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_7",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_7",
+      "ref": "Give a detailed introduction to the stock market.",
+      "e2e": 3.8458,
+      "e2e_source": "marks",
+      "e2e_heard": 4.132,
+      "endpointing": 0.145,
+      "asr_final": 1.541,
+      "llm_ttft": 1.1558,
+      "tts_ttfb": 1.0003,
+      "transcript": "give a detailed introduction to the stock market",
+      "context_tokens": 1516,
+      "context_messages": 17,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_backchannel_80",
+      "run": 1,
+      "clip": "phrase_v15_backchannel_80",
+      "ref": "Illuminate vaccination history comprehensively.",
+      "e2e": 4.1732,
+      "e2e_source": "marks",
+      "e2e_heard": 4.58,
+      "endpointing": 0.1136,
+      "asr_final": 1.5223,
+      "llm_ttft": 1.395,
+      "tts_ttfb": 1.1289,
+      "transcript": "illuminate vaccination history comprehensively",
+      "context_tokens": 1277,
+      "context_messages": 5,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_background_59",
+      "run": 1,
+      "clip": "phrase_v15_background_59",
+      "ref": "How do you say 'thank you' in Italian?",
+      "e2e": 3.7658,
+      "e2e_source": "marks",
+      "e2e_heard": 4.196,
+      "endpointing": 0.1161,
+      "asr_final": 1.5097,
+      "llm_ttft": 1.0504,
+      "tts_ttfb": 0.9647,
+      "transcript": "how do you say thank you in italian",
+      "context_tokens": 1374,
+      "context_messages": 9,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_interruption_51",
+      "run": 1,
+      "clip": "phrase_v15_interruption_51",
+      "ref": "How do antivirus programs work?",
+      "e2e": 4.2374,
+      "e2e_source": "marks",
+      "e2e_heard": 4.644,
+      "endpointing": 0.1162,
+      "asr_final": 1.5734,
+      "llm_ttft": 1.5587,
+      "tts_ttfb": 1.0348,
+      "transcript": "how do antivirus programs",
+      "context_tokens": 1432,
+      "context_messages": 13,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 1,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_talking_to_other_16",
+      "run": 1,
+      "clip": "phrase_v15_talking_to_other_16",
+      "ref": "Open the garage door, please.",
+      "e2e": 3.7542,
+      "e2e_source": "marks",
+      "e2e_heard": 4.164,
+      "endpointing": 0.1093,
+      "asr_final": 1.6784,
+      "llm_ttft": 0.952,
+      "tts_ttfb": 1.0053,
+      "transcript": "open the garage door please",
+      "context_tokens": 1401,
+      "context_messages": 11,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v15_talking_to_other_34",
+      "run": 1,
+      "clip": "phrase_v15_talking_to_other_34",
+      "ref": "Mute the TV.",
+      "e2e": 5.5094,
+      "e2e_source": "marks",
+      "e2e_heard": 5.956,
+      "endpointing": 0.1128,
+      "asr_final": 1.4284,
+      "llm_ttft": 2.945,
+      "tts_ttfb": 1.0266,
+      "transcript": "mute the tv",
+      "context_tokens": 1337,
+      "context_messages": 7,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 3,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v1_interrupt_39",
+      "run": 1,
+      "clip": "phrase_v1_interrupt_39",
+      "ref": "Is morning the best time to exercise?",
+      "e2e": null,
+      "e2e_source": null,
+      "e2e_heard": null,
+      "endpointing": 0.1486,
+      "asr_final": 1.6614,
+      "llm_ttft": 2.1006,
+      "tts_ttfb": 1.0717,
+      "transcript": "is morning the best time to exercise",
+      "context_tokens": 1199,
+      "context_messages": 1,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio"
+      ]
+    },
+    {
+      "trial": "r01_stage_latency_phrase_v1_interrupt_48",
+      "run": 1,
+      "clip": "phrase_v1_interrupt_48",
+      "ref": "I've been reading about climate change lately",
+      "e2e": 4.3943,
+      "e2e_source": "marks",
+      "e2e_heard": 4.836,
+      "endpointing": 0.1103,
+      "asr_final": 1.5445,
+      "llm_ttft": 1.7023,
+      "tts_ttfb": 1.0454,
+      "transcript": "i've been reading about climate change lately",
+      "context_tokens": 1481,
+      "context_messages": 15,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_28",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_28",
+      "ref": "Offer a complete overview of cybersecurity.",
+      "e2e": 4.267,
+      "e2e_source": "marks",
+      "e2e_heard": 4.612,
+      "endpointing": 0.1491,
+      "asr_final": 1.7113,
+      "llm_ttft": 1.323,
+      "tts_ttfb": 0.9756,
+      "transcript": "offer a complete overview of cybersecurity",
+      "context_tokens": 1850,
+      "context_messages": 35,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 6,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_63",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_63",
+      "ref": "Describe space telescopes completely.",
+      "e2e": 4.5304,
+      "e2e_source": "marks",
+      "e2e_heard": 4.9,
+      "endpointing": 0.1596,
+      "asr_final": 1.5738,
+      "llm_ttft": 1.7423,
+      "tts_ttfb": 1.0264,
+      "transcript": "describe space telescopes completely",
+      "context_tokens": 1615,
+      "context_messages": 21,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_7",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_7",
+      "ref": "Give a detailed introduction to the stock market.",
+      "e2e": 4.2421,
+      "e2e_source": "marks",
+      "e2e_heard": 4.516,
+      "endpointing": 0.1483,
+      "asr_final": 1.5498,
+      "llm_ttft": 1.5009,
+      "tts_ttfb": 1.0206,
+      "transcript": "give a detailed introduction to the stock market",
+      "context_tokens": 1725,
+      "context_messages": 27,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_backchannel_80",
+      "run": 2,
+      "clip": "phrase_v15_backchannel_80",
+      "ref": "Illuminate vaccination history comprehensively.",
+      "e2e": 3.7992,
+      "e2e_source": "marks",
+      "e2e_heard": 4.292,
+      "endpointing": 0.1105,
+      "asr_final": 1.519,
+      "llm_ttft": 1.0331,
+      "tts_ttfb": 1.0286,
+      "transcript": "illuminate vaccination history comprehensively",
+      "context_tokens": 1895,
+      "context_messages": 37,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_background_59",
+      "run": 2,
+      "clip": "phrase_v15_background_59",
+      "ref": "How do you say 'thank you' in Italian?",
+      "e2e": 4.4925,
+      "e2e_source": "marks",
+      "e2e_heard": 4.9,
+      "endpointing": 0.1415,
+      "asr_final": 1.5789,
+      "llm_ttft": 1.8234,
+      "tts_ttfb": 0.9861,
+      "transcript": "how do you say thank you in italian",
+      "context_tokens": 1694,
+      "context_messages": 25,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_interruption_51",
+      "run": 2,
+      "clip": "phrase_v15_interruption_51",
+      "ref": "How do antivirus programs work?",
+      "e2e": 3.9366,
+      "e2e_source": "marks",
+      "e2e_heard": 4.356,
+      "endpointing": 0.1176,
+      "asr_final": 1.5446,
+      "llm_ttft": 1.2289,
+      "tts_ttfb": 1.0183,
+      "transcript": "how do antivirus programs",
+      "context_tokens": 1783,
+      "context_messages": 31,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 1,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_talking_to_other_16",
+      "run": 2,
+      "clip": "phrase_v15_talking_to_other_16",
+      "ref": "Open the garage door, please.",
+      "e2e": 5.2016,
+      "e2e_source": "marks",
+      "e2e_heard": 5.7,
+      "endpointing": 0.113,
+      "asr_final": 1.6055,
+      "llm_ttft": 2.5045,
+      "tts_ttfb": 0.98,
+      "transcript": "open the garage door please",
+      "context_tokens": 1756,
+      "context_messages": 29,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v15_talking_to_other_34",
+      "run": 2,
+      "clip": "phrase_v15_talking_to_other_34",
+      "ref": "Mute the TV.",
+      "e2e": 5.962,
+      "e2e_source": "marks",
+      "e2e_heard": 6.5,
+      "endpointing": 0.1183,
+      "asr_final": 1.3304,
+      "llm_ttft": 3.4435,
+      "tts_ttfb": 1.0441,
+      "transcript": "mute the tv",
+      "context_tokens": 1820,
+      "context_messages": 33,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 3,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v1_interrupt_39",
+      "run": 2,
+      "clip": "phrase_v1_interrupt_39",
+      "ref": "Is morning the best time to exercise?",
+      "e2e": 4.1091,
+      "e2e_source": "marks",
+      "e2e_heard": 4.484,
+      "endpointing": 0.1383,
+      "asr_final": 1.5789,
+      "llm_ttft": 1.2592,
+      "tts_ttfb": 1.0051,
+      "transcript": "is morning the best time to exercise",
+      "context_tokens": 1653,
+      "context_messages": 23,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r02_stage_latency_phrase_v1_interrupt_48",
+      "run": 2,
+      "clip": "phrase_v1_interrupt_48",
+      "ref": "I've been reading about climate change lately",
+      "e2e": 4.1421,
+      "e2e_source": "marks",
+      "e2e_heard": 4.484,
+      "endpointing": 0.1093,
+      "asr_final": 1.5761,
+      "llm_ttft": 1.296,
+      "tts_ttfb": 1.032,
+      "transcript": "i've been reading about climate change lately",
+      "context_tokens": 1948,
+      "context_messages": 39,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_28",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_28",
+      "ref": "Offer a complete overview of cybersecurity.",
+      "e2e": 4.1372,
+      "e2e_source": "marks",
+      "e2e_heard": 4.548,
+      "endpointing": 0.1505,
+      "asr_final": 1.5982,
+      "llm_ttft": 1.3643,
+      "tts_ttfb": 1.0387,
+      "transcript": "offer a complete overview of cybersecurity",
+      "context_tokens": 2075,
+      "context_messages": 45,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 6,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_63",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_63",
+      "ref": "Describe space telescopes completely.",
+      "e2e": 4.1694,
+      "e2e_source": "marks",
+      "e2e_heard": 4.516,
+      "endpointing": 0.1448,
+      "asr_final": 1.5997,
+      "llm_ttft": 1.4696,
+      "tts_ttfb": 1.0051,
+      "transcript": "describe space telescopes completely",
+      "context_tokens": 2110,
+      "context_messages": 47,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_7",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_7",
+      "ref": "Give a detailed introduction to the stock market.",
+      "e2e": 4.0425,
+      "e2e_source": "marks",
+      "e2e_heard": 4.292,
+      "endpointing": 0.1437,
+      "asr_final": 1.6507,
+      "llm_ttft": 1.2591,
+      "tts_ttfb": 1.0269,
+      "transcript": "give a detailed introduction to the stock market",
+      "context_tokens": 2027,
+      "context_messages": 43,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_backchannel_80",
+      "run": 3,
+      "clip": "phrase_v15_backchannel_80",
+      "ref": "Illuminate vaccination history comprehensively.",
+      "e2e": 3.8959,
+      "e2e_source": "marks",
+      "e2e_heard": 4.388,
+      "endpointing": 0.1131,
+      "asr_final": 1.576,
+      "llm_ttft": 1.1855,
+      "tts_ttfb": 1.0317,
+      "transcript": "illuminate vaccination history comprehensively",
+      "context_tokens": 2142,
+      "context_messages": 49,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 4,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_background_59",
+      "run": 3,
+      "clip": "phrase_v15_background_59",
+      "ref": "How do you say 'thank you' in Italian?",
+      "e2e": 3.8256,
+      "e2e_source": "marks",
+      "e2e_heard": 4.228,
+      "endpointing": 0.1129,
+      "asr_final": 1.5665,
+      "llm_ttft": 1.0446,
+      "tts_ttfb": 0.9764,
+      "transcript": "how do you say thank you in italian",
+      "context_tokens": 2320,
+      "context_messages": 59,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 8,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_interruption_51",
+      "run": 3,
+      "clip": "phrase_v15_interruption_51",
+      "ref": "How do antivirus programs work?",
+      "e2e": 4.5215,
+      "e2e_source": "marks",
+      "e2e_heard": 4.74,
+      "endpointing": 0.1165,
+      "asr_final": 1.5834,
+      "llm_ttft": 1.5762,
+      "tts_ttfb": 1.0131,
+      "transcript": "how do antivirus programs",
+      "context_tokens": 1984,
+      "context_messages": 41,
+      "wer": 0.2,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 1,
+        "wer": 0.2
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_talking_to_other_16",
+      "run": 3,
+      "clip": "phrase_v15_talking_to_other_16",
+      "ref": "Open the garage door, please.",
+      "e2e": 4.081,
+      "e2e_source": "marks",
+      "e2e_heard": 4.42,
+      "endpointing": 0.1098,
+      "asr_final": 1.5576,
+      "llm_ttft": 1.2759,
+      "tts_ttfb": 1.0342,
+      "transcript": "open the garage door please",
+      "context_tokens": 2261,
+      "context_messages": 55,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 5,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v15_talking_to_other_34",
+      "run": 3,
+      "clip": "phrase_v15_talking_to_other_34",
+      "ref": "Mute the TV.",
+      "e2e": 5.3123,
+      "e2e_source": "marks",
+      "e2e_heard": 5.796,
+      "endpointing": 0.112,
+      "asr_final": 1.3339,
+      "llm_ttft": 2.9308,
+      "tts_ttfb": 1.0143,
+      "transcript": "mute the tv",
+      "context_tokens": 2289,
+      "context_messages": 57,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 3,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v1_interrupt_39",
+      "run": 3,
+      "clip": "phrase_v1_interrupt_39",
+      "ref": "Is morning the best time to exercise?",
+      "e2e": 4.0478,
+      "e2e_source": "marks",
+      "e2e_heard": 4.42,
+      "endpointing": 0.1449,
+      "asr_final": 1.7365,
+      "llm_ttft": 1.2096,
+      "tts_ttfb": 1.0089,
+      "transcript": "is morning the best time to exercise",
+      "context_tokens": 2187,
+      "context_messages": 51,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    },
+    {
+      "trial": "r03_stage_latency_phrase_v1_interrupt_48",
+      "run": 3,
+      "clip": "phrase_v1_interrupt_48",
+      "ref": "I've been reading about climate change lately",
+      "e2e": 3.6351,
+      "e2e_source": "marks",
+      "e2e_heard": 4.004,
+      "endpointing": 0.1171,
+      "asr_final": 1.6524,
+      "llm_ttft": 0.9732,
+      "tts_ttfb": 0.965,
+      "transcript": "i've been reading about climate change lately",
+      "context_tokens": 2226,
+      "context_messages": 53,
+      "wer": 0.0,
+      "wer_detail": {
+        "ref_words": 7,
+        "edits": 0,
+        "wer": 0.0
+      },
+      "found": [
+        "vad_end",
+        "asr_final",
+        "llm_request",
+        "llm_first_token",
+        "tts_request",
+        "tts_first_audio",
+        "audio_out"
+      ]
+    }
+  ],
+  "per_run": {
+    "1": {
+      "e2e": {
+        "n": 9,
+        "median": 3.8458,
+        "p95": 5.06336,
+        "mean": 4.123988888888889,
+        "min": 3.6339,
+        "max": 5.5094,
+        "ci95_median": [
+          3.7542,
+          4.3943
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.5589499999999998,
+        "p95": 1.67075,
+        "mean": 1.56296,
+        "min": 1.4284,
+        "max": 1.6784,
+        "ci95_median": [
+          1.5223,
+          1.6174
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 10,
+        "median": 1.2753999999999999,
+        "p95": 2.565019999999999,
+        "mean": 1.4847899999999998,
+        "min": 0.9003,
+        "max": 2.945,
+        "ci95_median": [
+          1.0496375,
+          1.7478
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 1.0245,
+        "p95": 1.10316,
+        "mean": 1.02906,
+        "min": 0.9647,
+        "max": 1.1289,
+        "ci95_median": [
+          0.9979,
+          1.0492525
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    },
+    "2": {
+      "e2e": {
+        "n": 10,
+        "median": 4.25455,
+        "p95": 5.619819999999999,
+        "mean": 4.468259999999999,
+        "min": 3.7992,
+        "max": 5.962,
+        "ci95_median": [
+          4.038937499999999,
+          4.67185
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.57495,
+        "p95": 1.66369,
+        "mean": 1.5568300000000002,
+        "min": 1.3304,
+        "max": 1.7113,
+        "ci95_median": [
+          1.544345,
+          1.5908
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 10,
+        "median": 1.41195,
+        "p95": 3.020949999999999,
+        "mean": 1.71548,
+        "min": 1.0331,
+        "max": 3.4435,
+        "ci95_median": [
+          1.2588212500000002,
+          1.9002500000000002
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 1.01945,
+        "p95": 1.038655,
+        "mean": 1.01168,
+        "min": 0.9756,
+        "max": 1.0441,
+        "ci95_median": [
+          0.9861,
+          1.0286149999999998
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    },
+    "3": {
+      "e2e": {
+        "n": 10,
+        "median": 4.0644,
+        "p95": 4.956439999999999,
+        "mean": 4.16683,
+        "min": 3.6351,
+        "max": 5.3123,
+        "ci95_median": [
+          3.8959,
+          4.1694
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "asr_final": {
+        "n": 10,
+        "median": 1.5908,
+        "p95": 1.698655,
+        "mean": 1.5854899999999998,
+        "min": 1.3339,
+        "max": 1.7365,
+        "ci95_median": [
+          1.5665,
+          1.6507
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "llm_ttft": {
+        "n": 10,
+        "median": 1.2675,
+        "p95": 2.3212299999999986,
+        "mean": 1.42888,
+        "min": 0.9732,
+        "max": 2.9308,
+        "ci95_median": [
+          1.1848687500000001,
+          1.4696
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      },
+      "tts_ttfb": {
+        "n": 10,
+        "median": 1.0137,
+        "p95": 1.036675,
+        "mean": 1.01143,
+        "min": 0.965,
+        "max": 1.0387,
+        "ci95_median": [
+          1.0014925,
+          1.0317
+        ],
+        "p95_note": "with fewer than 20 trials p95 is close to the slowest trial"
+      }
+    }
+  }
+}
