@@ -81,6 +81,21 @@ fdbench output for both runs is in [`results/`](results/). Run 2 adds the `warm(
 | Barge-in | < 0.8 s | 0.44 s | 0.38 s | 0.38 s |
 | WER | < 15 % | 1.8 % | 6.2 % | — |
 
+### Compared with the state of the art
+
+| System | Architecture | Response latency | Pauses (Full-Duplex-Bench) |
+|---|---|---|---|
+| **Iris (ours), Raspberry Pi 4** | cascade ASR → LLM → TTS, tools via MCP | **4.08 s mean, 3.86 s median** | stayed silent 2/2 |
+| GPT-4o voice ([OpenAI, 2024](https://openai.com/index/hello-gpt-4o/)) | native speech-to-speech, cloud | 0.32 s average (0.23 s minimum) | – |
+| Moshi ([Kyutai, arXiv 2410.00037](https://arxiv.org/abs/2410.00037)) | full-duplex speech LM, GPU | 0.16 s theoretical, ~0.2 s in practice | takes over almost every pause ([FDB](https://arxiv.org/abs/2503.04721)) |
+| ChatGPT Voice Mode, 2023 ([OpenAI](https://openai.com/index/hello-gpt-4o/)) | cascade (GPT-4) | 5.4 s average | – |
+
+Humans leave about 0.2 s between turns. Native speech-to-speech models are ~12× faster than Iris, because a cascade
+waits for the full transcript, then the LLM, then TTS, each a cloud round trip from a Pi on Wi-Fi. Iris is faster than
+the cascaded ChatGPT Voice Mode those models replaced, handles pauses better than Moshi, and every action is an MCP tool
+on the Pi (lights, timers, weather, a background agent), which speech-only models don't do. Next: stream ASR partials
+into the LLM and trim the context.
+
 Deck (2-page template): [`deck/Iris-ME3-deck.pdf`](deck/Iris-ME3-deck.pdf), built by `deck/build_deck.js`.
 
 ## Web emulator (live view of what Iris does)

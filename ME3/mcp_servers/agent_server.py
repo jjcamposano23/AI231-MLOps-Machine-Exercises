@@ -13,6 +13,7 @@ import functools
 import http.server
 import json
 import os
+import re
 import socket
 import threading
 import time
@@ -30,6 +31,7 @@ log = get_logger("agent")
 PROVIDER = os.environ.get("AGENT_PROVIDER", "openrouter").lower()
 MODEL = os.environ.get("AGENT_MODEL", "claude-sonnet-5-5" if PROVIDER == "anthropic" else "openai/gpt-oss-120b")
 MAX_STEPS = int(os.environ.get("AGENT_MAX_STEPS", 12))
+MAX_TOKENS = int(os.environ.get("AGENT_MAX_TOKENS", 4000))   # OpenRouter reserves credit per max_tokens
 WORKSPACE = Path(os.environ.get("AGENT_WORKSPACE", DATA / "workspace")).resolve()
 WORKSPACE.mkdir(parents=True, exist_ok=True)
 WEB_PORT = int(os.environ.get("AGENT_WEB_PORT", 8080))
@@ -41,7 +43,7 @@ be read aloud: no markdown, no lists, no URLs except the page link if you built 
 - To build something (web page, game, app), ALWAYS make it a browser app: write ONE complete, self-contained
   file named index.html (inline CSS and JavaScript, no CDN, no Python, no build step) into its own folder,
   e.g. flappy/index.html. Never write .py files for games or apps: the user opens the result in a browser. It will be served at http://<pi-address>:{WEB_PORT}/<folder>/.
-- Keep files small and working. Don't ask questions; make sensible choices."""
+- Keep files small and working (a game or page in under ~250 lines). Don't ask questions; make sensible choices."""
 
 TOOLS = [
     {"name": "web_search", "description": "Search the web; returns an answer and top results.",
@@ -96,7 +98,7 @@ async def _loop_anthropic(task: str, written: list[str]) -> str:
     client = AsyncAnthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     messages = [{"role": "user", "content": task}]
     for _ in range(MAX_STEPS):
-        resp = await client.messages.create(model=MODEL, max_tokens=8000, system=SYSTEM, tools=TOOLS,
+        resp = await client.messages.create(model=MODEL, max_tokens=MAX_TOKENS, system=SYSTEM, tools=TOOLS,
                                             messages=messages)
         messages.append({"role": "assistant", "content": resp.content})
         uses = [b for b in resp.content if b.type == "tool_use"]
@@ -117,7 +119,7 @@ async def _loop_openrouter(task: str, written: list[str]) -> str:
                                                "parameters": t["input_schema"]}} for t in TOOLS]
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": task}]
     for _ in range(MAX_STEPS):
-        r = await client.chat.completions.create(model=MODEL, messages=messages, tools=tools, max_tokens=8000)
+        r = await client.chat.completions.create(model=MODEL, messages=messages, tools=tools, max_tokens=MAX_TOKENS)
         m = r.choices[0].message
         messages.append(m.model_dump(exclude_none=True))
         if not m.tool_calls:
@@ -126,6 +128,114 @@ async def _loop_openrouter(task: str, written: list[str]) -> str:
             out = await _run_tool(c.function.name, json.loads(c.function.arguments or "{}"), written)
             messages.append({"role": "tool", "tool_call_id": c.id, "content": out})
     return "I ran out of steps before finishing."
+
+
+# ------------------------------------------------------------------ live progress for the web emulator
+_RE_PATH = re.compile(r'"path"\s*:\s*"([^"]*)"')
+_RE_CONTENT = re.compile(r'"content"\s*:\s*"')
+
+
+def _partial_content(args_text: str) -> str:
+    """Best-effort decode of a half-streamed write_file arguments JSON: the file text written so far."""
+    m = _RE_CONTENT.search(args_text)
+    if not m:
+        return ""
+    raw = args_text[m.end():]
+    for cut in range(0, 8):                               # trim an unfinished escape (\" or é) at the end
+        try:
+            return json.loads('"' + raw[:len(raw) - cut] + '"')
+        except json.JSONDecodeError:
+            continue
+    return raw.replace("\\n", "\n").replace('\\"', '"').replace("\\t", "\t").replace("\\\\", "\\")
+
+
+def _step(**kw) -> None:
+    emulator_bus.emit("agent_step", **kw)
+
+
+def _tool_detail(name: str, args: dict) -> str:
+    if name == "web_search":
+        return args.get("query", "")
+    if name in ("write_file", "read_file"):
+        return args.get("path", "")
+    return ""
+
+
+async def _loop_openrouter_stream(task: str, written: list[str]) -> str:
+    """Same loop as _loop_openrouter, but streamed so the emulator can show the agent working: each step, each
+    tool call, and the code of a file while it is being written (about once a second)."""
+    from openai import AsyncOpenAI
+    client = AsyncOpenAI(api_key=os.environ.get("OPENROUTER_API_KEY"), base_url="https://openrouter.ai/api/v1")
+    tools = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
+                                               "parameters": t["input_schema"]}} for t in TOOLS]
+    messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": task}]
+    for n in range(1, MAX_STEPS + 1):
+        _step(phase="thinking", step=n, text=f"Step {n}: deciding the next action")
+        stream = await client.chat.completions.create(model=MODEL, messages=messages, tools=tools, max_tokens=MAX_TOKENS,
+                                                      stream=True)
+        content, calls, last_emit = [], {}, 0.0
+        async for chunk in stream:
+            if not chunk.choices:
+                continue
+            d = chunk.choices[0].delta
+            if d.content:
+                content.append(d.content)
+            for tc in d.tool_calls or []:
+                c = calls.setdefault(tc.index, {"id": "", "name": "", "args": ""})
+                if tc.id:
+                    c["id"] = tc.id
+                if tc.function and tc.function.name:
+                    c["name"] += tc.function.name
+                if tc.function and tc.function.arguments:
+                    c["args"] += tc.function.arguments
+            now = time.monotonic()
+            if now - last_emit > 0.9 and calls:
+                c = calls[max(calls)]
+                if c["name"] == "write_file":
+                    code = _partial_content(c["args"])
+                    pm = _RE_PATH.search(c["args"])
+                    _step(phase="writing", step=n, path=pm.group(1) if pm else "", chars=len(code), code=code[-3000:])
+                    last_emit = now
+        text = "".join(content).strip()
+        if not calls:
+            return text
+        msg = {"role": "assistant", "content": text or None,
+               "tool_calls": [{"id": c["id"] or f"call_{i}", "type": "function",
+                               "function": {"name": c["name"], "arguments": c["args"] or "{}"}}
+                              for i, c in sorted(calls.items())]}
+        messages.append(msg)
+        for tc in msg["tool_calls"]:
+            name = tc["function"]["name"]
+            try:
+                args = json.loads(tc["function"]["arguments"] or "{}")
+            except json.JSONDecodeError:
+                args = {}
+            _step(phase="tool", step=n, tool=name, text=_tool_detail(name, args))
+            out = await _run_tool(name, args, written)
+            if name == "write_file" and "content" in args:
+                _step(phase="wrote", step=n, path=args.get("path", ""), chars=len(args["content"]),
+                      code=args["content"][-3000:])
+                _emit_page(args.get("path", ""), task)
+            messages.append({"role": "tool", "tool_call_id": tc["id"], "content": out})
+    return "I ran out of steps before finishing."
+
+
+_emitted_pages: set[str] = set()
+
+
+def _emit_page(path: str, task: str) -> None:
+    """Send a written .html page to the emulator right away (live preview while the agent keeps working)."""
+    if not path.endswith(".html"):
+        return
+    try:
+        html = _safe(path).read_text(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        return
+    if len(html) < 400_000:
+        folder = path.split("/")[0]
+        link = f"http://{_lan_ip()}:{WEB_PORT}/{folder}/" if "/" in path else f"http://{_lan_ip()}:{WEB_PORT}/{path}"
+        emulator_bus.emit("agent_page", path=path, link=link, task=task, page_html=html)
+        _emitted_pages.add(path)
 
 
 def _lan_ip() -> str:
@@ -148,19 +258,32 @@ async def run_task(task: str) -> dict:
     t0 = time.monotonic()
     written: list[str] = []
     log.info("task: %s", task)
-    loop = _loop_anthropic if PROVIDER == "anthropic" else _loop_openrouter
+    _emitted_pages.clear()
+    _step(phase="start", text=f"Task received: {task}")
     try:
-        summary = await loop(task, written)
+        if PROVIDER == "anthropic":
+            summary = await _loop_anthropic(task, written)
+        else:
+            try:
+                summary = await _loop_openrouter_stream(task, written)
+            except Exception as e:  # noqa: BLE001
+                if written:
+                    raise
+                log.warning("streaming agent failed (%r); retrying without streaming", e)
+                _step(phase="thinking", text="Retrying without live progress")
+                summary = await _loop_openrouter(task, written)
     except Exception as e:  # noqa: BLE001
         log.exception("agent failed")
+        _step(phase="error", text=str(e)[:200])
         return {"ok": False, "summary": f"The background task failed: {e}"}
     pages = sorted({w.split("/")[0] for w in written if w.endswith(".html")})
     links = [f"http://{_lan_ip()}:{WEB_PORT}/{p}/" if not p.endswith(".html") else f"http://{_lan_ip()}:{WEB_PORT}/{p}"
              for p in pages]
     secs = round(time.monotonic() - t0, 1)
     log.info("done in %.1fs, files=%s", secs, written)
+    _step(phase="done", text=f"Finished in {secs} s" + (f": {', '.join(written)}" if written else ""))
     for w in written:                           # the emulator renders the built page inline (iframe srcdoc)
-        if w.endswith(".html"):
+        if w.endswith(".html") and w not in _emitted_pages:
             try:
                 html = (WORKSPACE / w).read_text(encoding="utf-8")
                 if len(html) < 400_000:

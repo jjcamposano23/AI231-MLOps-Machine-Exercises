@@ -13,6 +13,67 @@ pres.theme = { headFontFace: "Arial", bodyFontFace: "Arial" };
 pres.title = "Iris - Full-Duplex Voice Agent on a Raspberry Pi (ME3)";
 pres.author = "Jomar Christian Camposano";
 
+// ------------------------------------------------------------------ speaker notes (read aloud; [brackets] = cues)
+const NOTES1 = `[~3 min. Have iris-me3-emulator.web.app open on a second screen.]
+
+Good afternoon. I'm Jomar, and this is Iris, my full-duplex voice agent running on a Raspberry Pi 4.
+
+[1 - SYSTEM DIAGRAM]
+Everything inside the dashed box runs on the Pi. My voice comes in through a USB condenser mic, goes through WebRTC echo cancellation and Silero VAD, and then to my own ASR MCP server, which wraps Deepgram nova-3.
+On the emulator, "Voice in" at the top shows exactly what the mic heard, and "Voice out" shows what Iris said.
+The transcript goes into the Pipecat harness. Pipecat is the MCP client. The LLM is GPT-4.1-mini through OpenRouter; that is the only direct API call. Every tool the LLM can use comes from MCP servers I built: assist, home and agent.
+The reply goes back out through my TTS MCP server, which wraps Deepgram Aura-2, to the speaker.
+
+Full duplex means I can talk over her. When the VAD hears me while she is speaking, Pipecat cancels the audio and the LLM stream, and she stops in about 0.38 seconds and listens.
+
+All five MCP servers run on the Pi and start automatically at boot. And on the screen you can see the live web emulator: every turn and every tool call streams from the Pi to Firebase, so you see what Iris heard and what she did - the lights, the weather card, the timers.
+
+[2 - PROMPT]
+The system prompt is versioned in the repo; this is version 3. Iris answers in at most two short sentences, stops and listens when I interrupt, answers what I just said instead of the old topic, confirms before anything costly, and never reads markdown or URLs aloud - which matters for a voice agent.
+
+[3 - CONTEXT ENGINEERING]
+What goes into the context: the prompt plus 26 tool schemas, about 1.2 thousand tokens; the final transcript of each turn; tool results; and results from the background agent when they come back. Memory is notes and reminders through tools - no RAG yet.
+How it is managed: replies are capped at 400 tokens. Fillers like "One sec" are spoken but kept out of the context. The prompt-plus-tools prefix never changes, so it stays cache-friendly. On barge-in, queued audio is dropped, and an echo filter removes anything Iris hears from her own voice. And new today: while music plays, only speech that names Iris gets in, so song lyrics never reach the LLM.
+One honest limitation: the context grows from 1.2k to 5.2k tokens over 30 turns because I don't trim it yet - that is part of why LLM latency went up in the second run.
+
+[Next slide]`;
+
+const NOTES2 = `[~2 min talk + 2-3 min demo]
+
+[4 - MCP SERVICES + MODEL SERVING]
+This table is the single source of truth for what runs where.
+ASR and TTS are my MCP servers on the Pi, wrapping Deepgram. ASR has a warm() tool that keeps the connection hot while I am talking. TTS streams 100-millisecond audio chunks as MCP progress messages, so playback starts before the whole sentence is synthesized.
+The LLM is the only direct API. VAD, Smart Turn and echo cancellation run on the Pi itself.
+The task servers: assist for time, weather, web search, timers and reminders; home for the three LED bulbs, the OLED, the 7-segment display and music; and agent, which runs long jobs - like building a web page - in the background with Gemini 2.5 Flash, so Iris keeps talking to me while it works.
+
+[5 - EVALUATION]
+I used the class's standardized latency method with King's fdbench: one clock on the Pi, a timestamp at every stage, 10 phrases times 3 runs, mean and p95.
+End-to-end mean is 4.08 seconds, just over the 4-second target, but the median is 3.86 - under it. Barge-in is 0.38 seconds and WER is 6.2 percent, both well within target. ASR, LLM and TTS are still above their individual targets; the chart shows run 1 versus run 2 after the warm-up fix.
+On Full-Duplex-Bench she stayed silent through pauses and yielded when interrupted, but she still took 2 of 2 false turns - a TV and side talk.
+
+[VS SOTA - small table on the left]
+How does that compare with the state of the art? Native speech-to-speech models are much faster: GPT-4o answers in about 0.32 seconds on average, and Kyutai's Moshi in about 0.2 seconds - close to the roughly 0.2-second gap between humans in conversation. Iris is about 12 times slower, because a cascade waits for the full transcript, then the LLM, then speech synthesis, and each step is a cloud round trip from a Raspberry Pi over Wi-Fi.
+But compared with the cascaded design those models replaced - ChatGPT's 2023 Voice Mode, 5.4 seconds with GPT-4 - Iris is faster, at 4.08 seconds mean and 3.86 median.
+On turn-taking, Iris actually does better than Moshi on pauses: Moshi takes over almost every pause in Full-Duplex-Bench, while Iris stayed silent in both. And unlike a speech-only model, every action Iris takes is an MCP tool on the Pi - lights, timers, weather, a background agent - which is the point of this exercise.
+The gap to close is latency: streaming ASR partials into the LLM and trimming the context are my next steps.
+
+[DEMO - "Let me show it. No push-to-talk; she is always listening."]
+[Point at the top of the emulator: "Voice in" is what the mic heard (ASR), "Voice out" is what Iris said (TTS) - every turn shows up there and in the chat.]
+1. "Iris, build me a simple flappy bird game."  -> she says "On it"; the agent works in the background. [Point at the Background agent card: it shows each step and the code being written live; when the file is saved, "Live preview" opens the game.]
+2. While it runs: "Turn the lights purple."  -> red + blue bulbs light up; the emulator room changes.
+3. "What's the weather in Davao?"  -> live weather call; weather card on the emulator.
+4. "Set a timer for 2 minutes."  -> countdown on the 7-segment display.
+5. "Tell me about the history of Manila."  -> while she talks, cut in: "Stop - make the lights blue."  -> she stops within half a second.
+6. "Play some music."  -> then "Stop the music."  -> the music gate stops it right away.
+When the game is ready she announces it -> open it from the emulator's Background agent card.
+[If something stalls: wait 2 s and repeat. If the Pi is unreachable, open iris-me3-emulator.web.app/?demo for the recorded replay.]
+
+[CHALLENGES]
+Three problems I solved: slow first requests after idle because of Wi-Fi power save - fixed with warm-up pings while I talk; TTS waiting for the full clip - fixed by streaming chunks; and Iris hearing her own voice - fixed with echo cancellation plus an echo text filter.
+A new one today: with music playing, the turn detector never decided I had finished speaking, so I added a music gate that handles stop, pause, next and volume directly - the music stops about a tenth of a second after the transcript.
+Still open: she answers the TV and side conversations; the next step is an addressee check.
+Everything - code, logs and this deck - is in the repo linked at the bottom. Thank you; happy to take questions.`;
+
 const T = (s, text, o) => s.addText(text, Object.assign({ isTextBox: true, fontFace: "Arial", color: INK, margin: 0 }, o));
 
 function frame(s, title, right, page) {
@@ -68,6 +129,7 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
 {
   const s = pres.addSlide();
   frame(s, "Full-Duplex Voice Agent on a Raspberry Pi", "Iris · Pipecat + 5 own MCP servers on a Pi 4", 1);
+  s.addNotes(NOTES1);
 
   // ---- 1 SYSTEM DIAGRAM
   section(s, 1, "SYSTEM DIAGRAM", "the one diagram that explains your build", 0.67, 1.42);
@@ -78,8 +140,8 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   T(s, "CLOUD APIs", { x: 4.88, y: 1.93, w: 1.66, h: 0.18, fontSize: 7.5, bold: true, color: ORANGE });
 
   // devices
-  node(s, 0.85, 2.3, 0.78, 0.48, ["Mic", "USB headset"], PIF, TEAL);
-  node(s, 0.85, 3.2, 0.78, 0.48, ["Speaker", "USB headset"], PIF, TEAL);
+  node(s, 0.85, 2.3, 0.78, 0.48, ["Mic", "M-830 USB"], PIF, TEAL);
+  node(s, 0.85, 3.2, 0.78, 0.48, ["Speaker", "3.5 mm jack"], PIF, TEAL);
   // harness
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 1.79, y: 2.16, w: 1.6, h: 1.66, rectRadius: 0.05, fill: { color: NAVY }, line: { color: NAVY } });
   T(s, [
@@ -116,12 +178,13 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   T(s, "barge-in: speech detected -> stop TTS + LLM -> listen (0.38 s)", { x: 0.67, y: 4.42, w: 5.97, h: 0.22, fontFace: MONO, fontSize: 9, bold: true, color: ORANGE, align: "center" });
 
   T(s, dashList([
-    "Mic -> WebRTC AEC -> Silero VAD (on RPi) -> asr-mcp -> agent -> tts-mcp -> speaker",
+    "Mic -> WebRTC AEC -> Silero VAD (on RPi) -> asr-mcp -> LLM -> tts-mcp -> speaker",
     "Harness with MCP client: Pipecat 1.15 (streamable-HTTP MCP; Smart Turn v3 decides end of turn)",
     "LLM is a commercial API (gpt-4.1-mini via OpenRouter); every tool comes from MY MCP servers",
-    "All 5 MCP servers built by me and running on the RPi: asr, tts, assist, home, agent",
+    "All 5 MCP servers built by me, on the RPi, started at boot (systemd): asr, tts, assist, home, agent",
     "Barge-in cancels TTS playback and the LLM stream: playback stops 0.38 s after speech starts",
-    "Real tasks: weather, web search, timers/alarms on the TM1637, lights/OLED/music, background agent builds a web game",
+    "Real tasks: weather, web search, timers on the TM1637, 3 LED bulbs + OLED, music, background agent builds a web game",
+    "Live web emulator (Firebase): iris-me3-emulator.web.app",
     "On-RPi vs cloud: dashed box = runs on the Pi; orange = cloud APIs",
   ], 11, 5), { x: 6.96, y: 1.72, w: 5.71, h: 2.95, valign: "top" });
 
@@ -147,7 +210,7 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   section(s, 3, "CONTEXT ENGINEERING", "", 6.96, 4.78);
   T(s, "GOES IN:", { x: 6.96, y: 5.14, w: 2.7, h: 0.2, fontSize: 10, bold: true, color: TEAL });
   T(s, dashList([
-    "system prompt v3 + persona + 25 tool schemas (~1.2k tokens)",
+    "system prompt v3 + persona + 26 tool schemas (~1.2k tokens)",
     "ASR final per VAD / Smart Turn segment",
     "VAD turn events (user-turn aggregation)",
     "MCP tool results + async agent results",
@@ -157,7 +220,7 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   T(s, dashList([
     "replies capped at 400 tokens; fillers spoken, kept out of context",
     "stable prefix (prompt + tools) never edited: cache-friendly TTFT",
-    "idle -> listen -> think -> speak (Pipecat frames)",
+    "music playing: speech must name Iris, so lyrics never enter context",
     "on barge-in: drop queued TTS audio; echo filter drops self-heard text",
     [{ text: "logged per run: " }, { text: "1.2k -> 5.2k tokens", options: { bold: true } }, { text: " over 30 turns (no trim yet)" }],
   ], 9, 2), { x: 9.92, y: 5.38, w: 2.75, h: 1.6, valign: "top" });
@@ -167,6 +230,7 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
 {
   const s = pres.addSlide();
   frame(s, "MCP Services, Evaluation & Model Serving", "build + run servers on the RPi", 2);
+  s.addNotes(NOTES2);
 
   // ---- 4 MCP SERVICES (+6 model serving)
   section(s, 4, "MCP SERVICES", "+ section 6: model serving (one table, one truth)", 0.67, 1.38, 9);
@@ -174,10 +238,10 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   const rows = [
     ["ASR", "asr-mcp · streamable HTTP :8101", "transcribe(audio_b64) -> text · warm()", "Deepgram nova-3 (+ keyterms)", "RPi; final on VAD end; kept warm while user talks"],
     ["TTS", "tts-mcp · HTTP + SSE :8102", "synthesize_stream(text) -> 100 ms PCM chunks", "Deepgram Aura-2 (pandora)", "RPi; chunks as MCP progress; cancel on barge-in"],
-    ["LLM", "Pipecat 1.15 (harness MCP client)", "function calling: 25 MCP tools + delegate_task", "OpenAI gpt-4.1-mini (OpenRouter)", "commercial API; streaming tokens; max 400"],
+    ["LLM", "Pipecat 1.15 (harness MCP client)", "function calling: 26 MCP tools + delegate_task", "OpenAI gpt-4.1-mini (OpenRouter)", "commercial API; streaming tokens; max 400"],
     ["VAD", "in-process (Pipecat)", "VADProcessor · Smart Turn v3 · WebRTC AEC", "Silero VAD v5 + Smart Turn v3", "RPi on-device, 16 kHz; AEC removes own voice"],
     ["Task", "assist-mcp · HTTP :8103", "time, weather, web_search, timer, alarm, reminders, notes", "Open-Meteo · Tavily", "RPi; due timers polled and spoken aloud"],
-    ["Task", "home-mcp · HTTP :8104", "lights, colour, brightness, thermostat, OLED, timer, music", "n/a (GPIO / I2C / mpv)", "RPi; drives ME2 OLED + TM1637 displays"],
+    ["Task", "home-mcp · HTTP :8104", "lights, colour, brightness, thermostat, OLED, timer, music", "GPIO LEDs · I2C OLED · VLC", "RPi; 3 LED bulbs, OLED, TM1637; music ducks"],
     ["Task", "agent-mcp · HTTP :8105", "run_task(task) -> spoken summary + page link", "Gemini 2.5 Flash (OpenRouter)", "RPi; async background job; pages on :8080"],
   ];
   s.addTable([[H("Component"), H("MCP server / transport"), H("Tools"), H("Model"), H("Served where / notes")]]
@@ -188,12 +252,23 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   // ---- 5 EVALUATION
   section(s, 5, "EVALUATION & BENCHMARK", "standardized latency method (classwork) · King's fdbench", 0.67, 3.73, 9);
   T(s, dashList([
-    "One clock: RPi monotonic; timestamp every stage (fdbench Pipecat marks)",
-    "VAD end -> ASR final -> LLM 1st token -> TTS 1st audio -> speaker",
-    "E2E = speaker - VAD end; barge-in = stop - speech start",
-    "10 phrases x 3 runs = 30 turns; mean + p95; JSON log per run",
-    "Full-Duplex-Bench v1/v1.5 (40 trials): stayed silent in 2/2 pauses, yielded to the interrupt, took 2/2 false turns",
-  ], 10, 4), { x: 0.67, y: 4.08, w: 5.6, h: 1.38, valign: "top" });
+    "Method: one Pi clock, every stage timestamped (fdbench); 10 phrases x 3 runs, mean + p95",
+    "Full-Duplex-Bench (40 trials): silent in 2/2 pauses, yielded to interrupt, 2/2 false turns",
+  ], 8.5, 1), { x: 0.67, y: 4.06, w: 5.7, h: 0.34, valign: "top" });
+  const SH = (t) => ({ text: t, options: { bold: true, color: "FFFFFF", fill: { color: TEAL } } });
+  const sota = [
+    ["Iris (ours) · RPi 4", "cascade ASR->LLM->TTS + MCP", "4.08 s (median 3.86)", "silent 2/2", true],
+    ["GPT-4o voice [1]", "native speech-to-speech (cloud)", "0.32 s avg (0.23 min)", "-", false],
+    ["Moshi [2]", "full-duplex speech LM (GPU)", "0.16 s theory, ~0.2 s real", "takes over ~all [3]", false],
+    ["ChatGPT Voice '23 [1]", "cascade (GPT-4)", "5.4 s avg", "-", false],
+  ];
+  s.addTable([[SH("vs SOTA"), SH("Architecture"), SH("Response latency"), SH("Pauses (FDB)")]]
+    .concat(sota.map((r, i) => r.slice(0, 4).map((c, j) => ({ text: c, options: Object.assign(
+      { fill: { color: r[4] ? "E6F4EC" : (i % 2 ? ROWALT : "FFFFFF") } }, j === 0 || r[4] ? { bold: j === 0 || j === 2 } : {}) })))),
+    { x: 0.67, y: 4.43, w: 5.7, colW: [1.3, 1.85, 1.5, 1.05], rowH: 0.17, fontFace: "Arial", fontSize: 7.5, color: INK,
+      border: { type: "solid", pt: 0.5, color: BOXL }, valign: "middle", margin: [0, 0.05, 0, 0.05] });
+  T(s, "[1] OpenAI GPT-4o launch, 2024 · [2] Kyutai Moshi paper, arXiv 2410.00037 · [3] Full-Duplex-Bench (2503.04721) re-reports. Human turn gap ~0.2 s.",
+    { x: 0.67, y: 5.36, w: 5.7, h: 0.12, fontSize: 6, italic: true, color: MUTED });
 
   const m = [
     ["E2E latency", "end of speech -> audio out", "< 4.0 s", "4.08 s", "5.65 s", false],
@@ -220,17 +295,19 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
   };
   box(0.67, 3.35, "DEMO (2-3 min, no push-to-talk)");
   const D = [
+    ['"Build me a flappy bird game"', " -> agent in background"],
+    ['"Lights purple"', " -> red + blue bulbs light up"],
     ['"Weather in Davao?"', " -> live get_weather MCP call"],
     ['"Set a 2-minute timer"', " -> countdown on the TM1637"],
     ["Long answer, I cut in", " -> Iris stops in ~0.4 s"],
-    ['"Build me a flappy bird game"', " -> agent runs, we keep chatting"],
-    ["Slow API:", ' "One sec..." filler + retry; game on :8080'],
+    ['"Play music" / "Stop the music"', " -> music gate"],
   ];
   T(s, D.flatMap((d, i) => [
     { text: `${i + 1} `, options: { bold: true, color: ORANGE, fontSize: 8.5 } },
     { text: d[0], options: { bold: true, fontSize: 8.5 } },
-    { text: d[1], options: Object.assign({ fontSize: 8.5, paraSpaceAfter: 3 }, i < D.length - 1 ? { breakLine: true } : {}) },
-  ]), { x: 0.81, y: by + 0.33, w: 3.1, h: bh - 0.4, valign: "top" });
+    { text: d[1], options: { fontSize: 8.5, paraSpaceAfter: 2, breakLine: true } },
+  ]).concat([{ text: "live view: iris-me3-emulator.web.app", options: { fontSize: 8, italic: true, color: TEAL } }]),
+    { x: 0.81, y: by + 0.31, w: 3.15, h: bh - 0.36, valign: "top" });
 
   box(4.17, 4.2, "RESULTS (mean s, 30 turns)");
   s.addChart(pres.charts.BAR, [
@@ -255,16 +332,17 @@ function arrow(s, x1, y, x2, color = NAVY, dash) {   // horizontal arrow from x1
 
   box(8.52, 4.15, "CHALLENGES & REFERENCES");
   const C = [
-    ["Slow ASR/TTS after idle (Wi-Fi power save)", " -> warm() pings while the user talks", " -> ASR 1.57->1.36 s, TTS 1.02->0.84 s"],
-    ["TTS waited for the whole clip", " -> stream 100 ms chunks as MCP progress", " -> TTFB 1-7 s -> 0.84 s"],
-    ["Iris heard herself, cut herself off", " -> WebRTC AEC + echo text filter", " -> echo -57 dB (offline test)"],
+    ["Slow ASR/TTS after idle", " -> warm() pings", " -> ASR 1.57->1.36 s, TTS 1.02->0.84 s"],
+    ["TTS waited for the whole clip", " -> 100 ms MCP chunks", " -> TTFB 1-7 s -> 0.84 s"],
+    ["Iris heard herself", " -> WebRTC AEC + echo text filter", " -> echo -57 dB (offline)"],
+    ["Music: turn never ended", " -> music gate fast path", " -> music stops in 0.1 s"],
     ["Open: answers TV / side talk (2/2)", " -> next: addressee check", ""],
   ];
   T(s, C.flatMap((c, i) => [
     { text: `${i + 1} `, options: { bold: true, color: ORANGE } },
     { text: c[0], options: { bold: true } },
     { text: c[1] },
-    { text: c[2], options: Object.assign({ bold: true, color: i < 3 ? OK : BAD }, { breakLine: true }) },
+    { text: c[2], options: Object.assign({ bold: true, color: i < 4 ? OK : BAD }, { breakLine: true }) },
   ]).concat([{ text: "refs: modelcontextprotocol.io · docs.pipecat.ai · fdbench · repo + logs: footer link", options: { color: MUTED, italic: true } }]),
     { x: 8.66, y: by + 0.31, w: 3.9, h: bh - 0.34, fontSize: 7.5, valign: "top", paraSpaceAfter: 1 });
 }

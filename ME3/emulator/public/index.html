@@ -124,6 +124,23 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;padding:16p
 .task .tt{font-weight:600;font-size:13px}
 .task .meta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:7px}
 .task .sum{font-size:13px;margin-top:6px;line-height:1.4}
+.steps{margin:7px 0 0;font-size:12.5px;line-height:1.45}
+.steps div{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps div:last-child{color:var(--ink)}
+.codehead{margin-top:7px;font-size:12px;color:#d9c8ff;display:flex;gap:6px;align-items:center}
+.code{max-height:190px;overflow:auto;background:#0a0f1d;border:1px solid #3a2d63;border-radius:8px;padding:8px 9px;margin-top:5px;
+  font:11px/1.4 "JetBrains Mono",Consolas,monospace;color:#cfe3ff;white-space:pre-wrap;word-break:break-all}
+.code .cur{display:inline-block;width:7px;height:12px;background:var(--agent);vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+/* live captions: what the mic heard / what Iris said */
+.captions{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 20px;background:#0e1628;border-bottom:1px solid var(--line)}
+.cap{border-radius:12px;padding:9px 13px;background:var(--panel);border:1px solid var(--line);min-height:58px}
+.cap .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:center}
+.cap .txt{font-size:18px;line-height:1.35;margin-top:3px;font-weight:500}
+.cap.heard .lbl b{color:#7aa2ff} .cap.said .lbl b{color:var(--green)}
+.cap.fresh{border-color:var(--orange);box-shadow:0 0 0 2px rgba(240,138,60,.25)}
+.cap .ago{font-weight:500;letter-spacing:0;text-transform:none}
+@media (max-width:760px){.captions{grid-template-columns:1fr;padding:8px 12px}.cap .txt{font-size:15px}}
 .openbtn{margin-top:8px;padding:6px 11px;border-radius:8px;border:1px solid var(--agent);background:#2a2143;color:#e3d6ff;font-size:12.5px;font-weight:600}
 .act{font-size:12px;display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #1a2439;white-space:nowrap;overflow:hidden}
 .act .srv{font-weight:700;font-size:10px;padding:1px 6px;border-radius:5px;color:#0b1220;flex:none}
@@ -181,6 +198,10 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;padding:16p
   <button class="hbtn" id="btnClear" title="Start a fresh screen">Clear</button>
   <button class="hbtn" id="btnFull">Fullscreen</button>
 </header>
+<div class="captions" aria-live="polite">
+  <div class="cap heard" id="capHeard"><div class="lbl"><b>🎤 Voice in</b> what the mic heard (ASR) <span class="ago" id="agoHeard"></span></div><div class="txt" id="txtHeard">—</div></div>
+  <div class="cap said" id="capSaid"><div class="lbl"><b>🔊 Voice out</b> what Iris said (TTS) <span class="ago" id="agoSaid"></span></div><div class="txt" id="txtSaid">—</div></div>
+</div>
 
 <main>
   <div class="left">
@@ -421,10 +442,13 @@ function renderAgent(){
     const meta = t.status==="running" ? `<span class="chip" style="padding:2px 7px"><span class="spin"></span>working · ${fmtLeft(now-t.started)}</span>`
                : t.status==="error" ? `<span style="color:var(--red)">failed</span>` : `<span style="color:var(--green)">done in ${t.seconds ?? "?"} s</span>`;
     return `<div class="task"><div class="tt">${esc(t.task)}</div><div class="meta">${meta}</div>
+      ${i===0&&t.steps?.length?`<div class="steps">${t.steps.slice(-6).map(s=>`<div>${s.icon} ${esc(s.text)}</div>`).join("")}</div>`:""}
+      ${i===0&&t.code?`<div class="codehead">${t.writing?'<span class="spin"></span> writing':"📄"} <b class="mono">${esc(t.codePath||"")}</b> · ${(t.chars||0).toLocaleString()} chars</div><pre class="code">${esc(t.code.slice(-2200))}${t.writing?'<span class="cur"></span>':""}</pre>`:""}
       ${t.summary?`<div class="sum">${esc(t.summary)}</div>`:""}
-      ${t.html?`<button class="openbtn" data-agent="${idx}">▶ Open what Iris built</button>`:(t.link?`<div class="meta">${esc(t.link)}</div>`:"")}</div>`;
+      ${t.html?`<button class="openbtn" data-agent="${idx}">▶ ${t.status==="running"?"Live preview":"Open what Iris built"}</button>`:(t.link?`<div class="meta">${esc(t.link)}</div>`:"")}</div>`;
   }).join("");
   el.querySelectorAll("[data-agent]").forEach(b=>b.onclick=()=>openPage(S.agent[+b.dataset.agent]));
+  el.querySelectorAll(".code").forEach(c=>c.scrollTop=c.scrollHeight);
 }
 function renderActivity(){
   const el=$("activity"); $("actCount").textContent=`${S.actCount} call${S.actCount===1?"":"s"}`;
@@ -434,6 +458,28 @@ function renderActivity(){
 }
 function argStr(a){ if(!a||typeof a!=="object") return ""; return Object.entries(a).map(([k,v])=>`${k}=${typeof v==="string"?JSON.stringify(v.length>28?v.slice(0,28)+"…":v):JSON.stringify(v)}`).join(", "); }
 
+const CAP={Heard:0,Said:0};
+function caption(which, text, t){
+  $("txt"+which).textContent = text||"—"; CAP[which]=t||Date.now()/1000;
+  if(!replaying){ const c=$("cap"+which); c.classList.add("fresh"); clearTimeout(c._t); c._t=setTimeout(()=>c.classList.remove("fresh"),2500); }
+}
+function capAgo(){ for(const w of ["Heard","Said"]) if(CAP[w]) $("ago"+w).textContent="· "+fmtLeft(Date.now()/1000-CAP[w])+" ago"; }
+const STEP_ICON={web_search:"🔎",write_file:"✍️",read_file:"📖",list_files:"📂"};
+function onAgentStep(p){
+  let t=[...S.agent].reverse().find(x=>x.status==="running");
+  if(!t){ if(p.phase!=="start") return; S.agent.push({task:(p.text||"").replace(/^Task received: /,"")||"task", started:p.t, status:"running"}); t=S.agent[S.agent.length-1]; }
+  t.steps=t.steps||[];
+  const add=(icon,text)=>{ const last=t.steps[t.steps.length-1]; if(!last||last.text!==text) t.steps.push({icon,text}); };
+  if(p.phase==="writing"){ t.code=p.code||""; t.codePath=p.path; t.chars=p.chars; t.writing=true; }
+  else if(p.phase==="wrote"){ t.code=p.code||""; t.codePath=p.path; t.chars=p.chars; t.writing=false; add("💾",`Saved ${p.path} (${(p.chars||0).toLocaleString()} chars)`); }
+  else if(p.phase==="tool"){ add(STEP_ICON[p.tool]||"🔧", p.tool==="write_file"?`Writing ${p.text}`:`${p.tool}${p.text?": "+p.text:""}`); }
+  else if(p.phase==="start") add("📋", p.text);
+  else if(p.phase==="thinking") add("🧠", p.text||"thinking");
+  else if(p.phase==="done"){ add("✅", p.text); t.writing=false; }
+  else if(p.phase==="error"){ add("⚠️", p.text); t.writing=false; }
+  if(t.steps.length>40) t.steps.splice(0,t.steps.length-40);
+  renderAgent(); if(p.phase!=="writing") flash("cAgent");
+}
 function openPage(t){ $("pageTitle").textContent=`Built by the agent · ${t.path||t.task}`; $("pageFrame").srcdoc=t.html; $("pageModal").classList.add("show"); }
 $("pageClose").onclick=()=>{ $("pageModal").classList.remove("show"); $("pageFrame").srcdoc=""; };
 
@@ -474,9 +520,10 @@ function apply(ev){
   if(p.ip && (k==="heartbeat"||k==="session")) S.net={ip:p.ip, ssid:p.ssid||""};
   if(k==="session"){ S.session=p.session; if(!replaying) addEl("sys", `Iris online · ${esc(p.llm||"")} · session ${esc(p.session)}`); }
   else if(k==="status"){ if(!replaying) setOrb(p.state); }
-  else if(k==="user"){ addEl("msg user", `<div class="who">You</div>${esc(p.text)}`); }
+  else if(k==="user"){ addEl("msg user", `<div class="who">You</div>${esc(p.text)}`); caption("Heard", p.text, p.t); }
   else if(k==="iris"){
     addEl(p.aside?"msg aside":"msg iris", `${p.aside?"":'<div class="who">Iris</div>'}${esc(p.text)}`);
+    caption("Said", p.text, p.t);
     if(!p.aside && pendingLat){ addEl("lat", latLine(pendingLat)); pendingLat=null; }
   }
   else if(k==="llm_tool"){ addChip(p.name, p.args); }
@@ -492,6 +539,7 @@ function apply(ev){
     const it=p.item||{}; toast(`${it.kind==="alarm"?"⏰":it.kind==="reminder"?"📌":"⏱️"} ${it.label||it.kind} — ${it.kind==="reminder"?"reminder":"done!"}`);
     if(!replaying){ $("cTimers").querySelector("h3").classList.add("ring"); setTimeout(()=>$("cTimers").querySelector("h3").classList.remove("ring"),2200); }
   }
+  else if(k==="agent_step"){ onAgentStep(p); }
   else if(k==="agent_page"){
     const t=[...S.agent].reverse().find(x=>!x.html) || S.agent[S.agent.length-1];
     if(t){ t.html=p.page_html; t.path=p.path; t.link=p.link; renderAgent(); }
@@ -519,7 +567,7 @@ function onTool(p){
 
 /* ================================================================ status ticks */
 setInterval(()=>{
-  tickSeg(); if((S.assist.pending||[]).length) renderTimers(); if(S.agent.some(t=>t.status==="running")) renderAgent();
+  tickSeg(); capAgo(); if((S.assist.pending||[]).length) renderTimers(); if(S.agent.some(t=>t.status==="running")) renderAgent();
   const age=Date.now()/1000-S.lastSeen;
   if(S.mode==="demo"){ $("piDot").className="dot warn"; $("piText").textContent="Pi: simulated"; }
   else if(S.lastSeen && age<45){ $("piDot").className="dot on"; $("piText").textContent = S.net ? `Pi online · ${S.net.ip}${S.net.ssid?" · "+S.net.ssid:""}` : "Pi online"; }
@@ -652,7 +700,7 @@ function demoScript(){
 let demoTimer=null;
 async function runDemo(){
   clearTimeout(demoTimer); S.mode="demo"; setConn("warn","demo replay (scripted)");
-  msgs.innerHTML=""; S.activity=[]; S.actCount=0; S.agent=[]; S.weather=null; S.search=null; chips.length=0;
+  msgs.innerHTML=""; for(const w of ["Heard","Said"]){ $("txt"+w).textContent="—"; $("ago"+w).textContent=""; CAP[w]=0; } S.activity=[]; S.actCount=0; S.agent=[]; S.weather=null; S.search=null; chips.length=0;
   const steps=demoScript(); let i=0;
   const next=()=>{ if(i>=steps.length){ setConn("warn","demo finished — Demo replay to run again"); return; }
     const [d,ev]=steps[i++]; demoTimer=setTimeout(()=>{ ev.payload.t = ev.payload.t || Date.now()/1000; apply(ev); next(); }, d); };
