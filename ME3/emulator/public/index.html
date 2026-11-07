@@ -403,9 +403,12 @@ function renderSearch(){
 function renderNotes(){
   const m=S.home.music||{}, a=S.assist, el=$("notes");
   const vol=Math.max(0,Math.min(100,m.volume??60));
-  let h=`<div class="music"><div class="eq ${m.playing&&!m.paused?"on":""}"><i></i><i></i><i></i><i></i><i></i></div>
-    <div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.playing?esc(m.track||"Playing"):"No music"}</b>
-    <span style="font-size:12px;color:var(--muted)">${m.playing?(m.paused?"paused":"playing"):"stopped"} · volume ${vol}%</span><div class="vol"><i style="width:${vol}%"></i></div></div></div>`;
+  const art=m.playing&&m.art&&/^https:\/\/i\.scdn\.co\//.test(m.art)?`<img src="${esc(m.art)}" alt="" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex:none">`:"";
+  const by=m.playing&&m.artist?`<span style="display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.artist)}</span>`:"";
+  const src=m.playing&&m.source==="Spotify"?`<span style="color:#1db954;font-weight:600">● Spotify</span> · `:"";
+  let h=`<div class="music">${art||`<div class="eq ${m.playing&&!m.paused?"on":""}"><i></i><i></i><i></i><i></i><i></i></div>`}
+    <div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.playing?esc(m.track||"Playing"):"No music"}</b>${by}
+    <span style="font-size:12px;color:var(--muted)">${src}${m.playing?(m.paused?"paused":"playing"):"stopped"} · volume ${vol}%</span><div class="vol"><i style="width:${vol}%"></i></div></div></div>`;
   if((a.notes||[]).length) h+=`<div class="sub">Notes</div>`+a.notes.slice(-3).reverse().map(n=>`<div class="note">📝 ${esc(n.text)}</div>`).join("");
   if((a.outbox||[]).length) h+=`<div class="sub">Messages sent</div>`+a.outbox.slice(-2).reverse().map(n=>`<div class="sms">✉️ <b>${esc(n.to)}</b>: ${esc(n.text)}</div>`).join("");
   el.innerHTML=h;
@@ -468,6 +471,7 @@ let pendingLat=null;
 function apply(ev){
   const p=ev.payload||{}, k=ev.kind;
   S.lastSeen=Math.max(S.lastSeen, p.t||0);
+  if(p.ip && (k==="heartbeat"||k==="session")) S.net={ip:p.ip, ssid:p.ssid||""};
   if(k==="session"){ S.session=p.session; if(!replaying) addEl("sys", `Iris online · ${esc(p.llm||"")} · session ${esc(p.session)}`); }
   else if(k==="status"){ if(!replaying) setOrb(p.state); }
   else if(k==="user"){ addEl("msg user", `<div class="who">You</div>${esc(p.text)}`); }
@@ -518,7 +522,7 @@ setInterval(()=>{
   tickSeg(); if((S.assist.pending||[]).length) renderTimers(); if(S.agent.some(t=>t.status==="running")) renderAgent();
   const age=Date.now()/1000-S.lastSeen;
   if(S.mode==="demo"){ $("piDot").className="dot warn"; $("piText").textContent="Pi: simulated"; }
-  else if(S.lastSeen && age<45){ $("piDot").className="dot on"; $("piText").textContent="Pi online"; }
+  else if(S.lastSeen && age<45){ $("piDot").className="dot on"; $("piText").textContent = S.net ? `Pi online · ${S.net.ip}${S.net.ssid?" · "+S.net.ssid:""}` : "Pi online"; }
   else { $("piDot").className="dot"; $("piText").textContent = S.lastSeen ? `Pi last seen ${fmtLeft(age)} ago` : "Pi: waiting"; }
 },1000);
 tickSeg(); renderRoom(); renderNotes();

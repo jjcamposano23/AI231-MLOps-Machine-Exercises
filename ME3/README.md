@@ -32,6 +32,23 @@ Test without a mic:
 - `python tools/mcp_smoke.py` calls every MCP server.
 - `python tools/text_chat.py "turn the lights blue"` runs the same LLM and tools from text.
 
+### Pi setup used for the demo
+- **Audio:** M-830 USB condenser mic + Redragon Orpheus speaker on the Pi's 3.5 mm jack (`dtparam=audio=on`), both
+  through PipeWire (`pipewire-alsa`), so Iris's voice and music share the speaker. `INPUT/OUTPUT_DEVICE_INDEX` empty =
+  system default.
+- **Lights:** three LED bulbs, yellow GPIO27 / red GPIO17 / blue GPIO22 (`hardware/pi_leds.py`; other colours are
+  mixed, e.g. purple = red + blue). The jack shares GPIO18's PWM with the old WS2812 strip, so `STRIP=off`.
+  Also the SSD1306 OLED (shows "Iris ready" + the Pi's IP at boot) and the TM1637 countdown.
+- **Starts at boot:** `bash scripts/install_autostart.sh` installs user services `iris` + `iris-mcp@{asr,tts,assist,
+  home,agent}` (desktop auto-login starts them; no sudo). `systemctl --user restart iris`, log `logs/iris.log`.
+- **Music:** `play_music` uses Spotify when set up (`mcp_servers/spotify_player.py`: Web API with PKCE sign-in via
+  `tools/spotify_login.py`, the Pi as Spotify Connect speaker via librespot, `scripts/iris-spotify.service`), else
+  MP3s in `data/music` played with VLC. Our account hit Spotify's audio-key refusal on every player
+  ([librespot #1649](https://github.com/librespot-org/librespot/issues/1649)), so the demo uses local files.
+- **Music gate** (`assistant/music_gate.py`): while music plays, speech that doesn't name Iris is ignored (lyrics),
+  "stop / pause / next / volume up|down the music" is handled directly (Smart Turn can't end a turn over music),
+  and the music is ducked while Iris talks.
+
 ## Full duplex: what's implemented
 - **Listening while speaking.** The mic is never muted. Silero VAD runs on every 20 ms frame, even while Iris talks.
 - **Barge-in.** When the user speaks, Iris cancels the LLM stream and the TTS and clears playback. With `INTERRUPT_MIN_WORDS=N`, she only stops after N transcribed words, which makes her robust to backchannels ("uh-huh") and speaker echo.

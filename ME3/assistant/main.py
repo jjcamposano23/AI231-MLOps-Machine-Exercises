@@ -147,6 +147,9 @@ class Assistant:
             tracker, echo = make_echo_guard()
             self._echo_mem = tracker._m
             stages.append(echo)                      # drop transcripts of Iris's own voice (no hardware AEC)
+        if not benchmark and os.environ.get("MUSIC_GATE", "1") != "0" and "home" in urls:
+            from assistant.music_gate import MusicGate      # music playing: only "Iris, ..." counts; duck while she talks
+            stages.append(MusicGate(McpLink(urls["home"], "home-duck")))
         stages += [user_agg, llm] + ([tracker] if tracker is not None else []) + [tts, transport.output()]
         pipeline = Pipeline(stages + [assistant_agg])
         session = uuid.uuid4().hex[:8]
@@ -158,7 +161,8 @@ class Assistant:
                                   audio_in_sample_rate=cfg.audio_in_sample_rate,
                                   audio_out_sample_rate=cfg.audio_out_sample_rate),
             observers=[LatencyObserver(cfg.latency_log, cfg.turns_log, session)]
-            + ([] if benchmark else [EmulatorObserver(session)]))
+            + ([] if benchmark else [EmulatorObserver(session)]),
+            idle_timeout_secs=None)              # a voice assistant waits for the user forever (default: quit at 5 min)
         self._greet = cfg.greet and not benchmark
         logger.info(f"Iris ready: LLM {cfg.llm_provider}/{cfg.llm_model}, {len(tools)} tools, "
                     f"turn stop={cfg.turn_stop}, agent={'on' if use_agent else 'off'}, session {session}")
@@ -248,12 +252,14 @@ class Assistant:
     async def _heartbeat(self) -> None:
         """Tell the web emulator this Iris is online (session start, then every 15 s)."""
         from mcp_servers import emulator_bus
+        from mcp_servers.common import net_info
         cfg = self.cfg
         emulator_bus.emit("session", session=self._session, bot=cfg.bot_name, llm=f"{cfg.llm_provider}/{cfg.llm_model}",
-                          voice=os.environ.get("TTS_VOICE", ""), asr=os.environ.get("ASR_MODEL", "nova-3"))
+                          voice=os.environ.get("TTS_VOICE", ""), asr=os.environ.get("ASR_MODEL", "nova-3"),
+                          **await asyncio.to_thread(net_info))
         while True:
             await asyncio.sleep(15)
-            emulator_bus.emit("heartbeat", session=self._session)
+            emulator_bus.emit("heartbeat", session=self._session, **await asyncio.to_thread(net_info))
 
     async def run(self) -> None:
         runner = WorkerRunner(handle_sigint=self._standalone)

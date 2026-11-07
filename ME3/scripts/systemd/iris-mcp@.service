@@ -1,0 +1,15 @@
+# One Iris MCP tool server (asr, tts, assist, home, agent) as a user service; started by iris.service.
+# Installed by scripts/install_autostart.sh. Logs: ~/ME3/logs/mcp_<name>.log
+[Unit]
+Description=Iris MCP server: %i
+After=network-online.target pipewire.service
+PartOf=iris.service
+
+[Service]
+WorkingDirectory=%h/ME3
+Environment=PYTHONUNBUFFERED=1
+ExecStart=%h/ME3/.venv/bin/python -m mcp_servers.%i_server
+StandardOutput=append:%h/ME3/logs/mcp_%i.log
+StandardError=append:%h/ME3/logs/mcp_%i.log
+Restart=always
+RestartSec=3

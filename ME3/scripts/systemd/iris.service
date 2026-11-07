@@ -1,0 +1,22 @@
+# Iris voice assistant, started at boot (desktop auto-login starts user services; no sudo needed).
+# Installed by scripts/install_autostart.sh.
+#   systemctl --user status iris          stop: systemctl --user stop iris       (also stops the MCP servers)
+#   journalctl --user -u iris -f          or ~/ME3/logs/iris.log
+[Unit]
+Description=Iris full-duplex voice assistant (ME3)
+Wants=network-online.target iris-mcp@asr.service iris-mcp@tts.service iris-mcp@assist.service iris-mcp@home.service iris-mcp@agent.service
+After=network-online.target pipewire.service wireplumber.service iris-mcp@asr.service iris-mcp@tts.service iris-mcp@assist.service iris-mcp@home.service iris-mcp@agent.service
+
+[Service]
+WorkingDirectory=%h/ME3
+Environment=PYTHONUNBUFFERED=1 MCP_AUTOSTART=0
+# wait (up to 60 s) until all five MCP servers listen and the internet is reachable (Wi-Fi can come up late)
+ExecStartPre=/bin/sh -c 'for i in $$(seq 60); do n=$$(ss -ltn | grep -cE "127.0.0.1:810[1-5] "); [ "$$n" -ge 5 ] && getent hosts api.deepgram.com >/dev/null && exit 0; sleep 1; done; exit 0'
+ExecStart=%h/ME3/.venv/bin/python -m assistant.main
+StandardOutput=append:%h/ME3/logs/iris.log
+StandardError=append:%h/ME3/logs/iris.log
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,18 @@
+# Spotify Connect speaker "Iris" (librespot from raspotify), run as the desktop user so it plays through PipeWire
+# and can share the speaker with Iris's voice. Install (no sudo):
+#   mkdir -p ~/.config/systemd/user && cp ~/ME3/scripts/iris-spotify.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now iris-spotify
+# First time: open Spotify on a phone/laptop on the same Wi-Fi and pick the "Iris" speaker once (credentials are
+# then cached and the speaker stays online for the Web API).
+[Unit]
+Description=Iris Spotify Connect speaker (librespot)
+After=pipewire.service pipewire-pulse.service wireplumber.service network-online.target
+
+[Service]
+ExecStart=/usr/bin/librespot --name Iris --device-type speaker --backend alsa --device default --bitrate 160 \
+  --cache %h/.cache/iris-librespot --initial-volume 60 --enable-volume-normalisation
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -174,3 +174,24 @@ def keep_warm(client, url: str, every: float = 15.0) -> None:
             await asyncio.sleep(every)
 
     asyncio.get_running_loop().create_task(_loop())
+
+
+def net_info() -> dict:
+    """The Pi's LAN IP and Wi-Fi network name (shown on the OLED and in the web emulator; no traffic is sent)."""
+    import socket
+    import subprocess
+    ip = None
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("8.8.8.8", 80))                    # UDP connect: picks the outgoing interface, sends nothing
+            ip = s.getsockname()[0]
+    except OSError:
+        pass
+    ssid = None
+    try:                                                  # NetworkManager connection on wlan0 (= Wi-Fi name)
+        out = subprocess.run(["nmcli", "-t", "-g", "GENERAL.CONNECTION", "device", "show", "wlan0"],
+                             capture_output=True, text=True, timeout=2).stdout.strip()
+        ssid = out.removeprefix("netplan-wlan0-") or None
+    except Exception:  # noqa: BLE001
+        pass
+    return {"ip": ip, "ssid": ssid}

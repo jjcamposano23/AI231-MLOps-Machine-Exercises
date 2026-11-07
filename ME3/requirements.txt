@@ -2,3 +2,4 @@ pipecat-ai[silero,websocket,mcp,openai,anthropic,local]==1.15.0
 python-dotenv
 httpx
 tzdata
+spotipy>=2.24            # Spotify Web API (optional: play_music falls back to local files)
