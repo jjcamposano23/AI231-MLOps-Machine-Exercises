@@ -66,6 +66,18 @@ fdbench output for both runs is in [`results/`](results/). Run 2 adds the `warm(
 
 Deck (2-page template): [`deck/Iris-ME3-deck.pdf`](deck/Iris-ME3-deck.pdf), built by `deck/build_deck.js`.
 
+## Web emulator (live view of what Iris does)
+**https://iris-me3-emulator.web.app** (add `?demo` for a scripted replay that needs no Pi). Shows a virtual room
+(WS2812 strip, OLED, 7-segment countdown, thermostat, speaker) plus weather, timers, web search, the background
+agent's built page, music/notes/messages, every MCP tool call with its timing, and the conversation itself.
+
+- The Pi publishes events through `mcp_servers/emulator_bus.py` to Firebase Realtime Database `/iris/events`
+  (batched REST PATCH, never blocks the voice loop). Tool calls come from the `common.tool()` wrapper on every MCP
+  tool, the conversation from `EmulatorObserver` in `assistant/observers.py`; `tools/text_chat.py` feeds it too.
+- The page (`emulator/public/index.html`, one static file) follows that node with the database's REST streaming API.
+- Rules (`emulator/database.rules.json`): anyone can read the events, only the Pi (database secret in `.env`:
+  `EMULATOR_FIREBASE_URL`, `EMULATOR_FIREBASE_SECRET`) can write. Deploy: `cd emulator && firebase deploy`.
+
 ## Demo script (≈2 min, follows the class's agreed flow)
 1. "Hi Iris, build me a simple flappy bird game." She says "On it…" and the background agent starts.
 2. While it runs: "Turn the lights blue… actually make it purple." This interrupts her mid-reply; the strip changes colour.

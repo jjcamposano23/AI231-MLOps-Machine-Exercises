@@ -21,7 +21,8 @@ from pathlib import Path
 import httpx
 from mcp.server.mcpserver import MCPServer
 
-from mcp_servers.common import DATA, get_logger, load_env, serve
+from mcp_servers import emulator_bus
+from mcp_servers.common import DATA, get_logger, load_env, serve, tool
 
 load_env()
 log = get_logger("agent")
@@ -140,7 +141,7 @@ server = MCPServer("agent", instructions="Background agent for long multi-step t
                                          "or games). Slow: seconds to minutes.")
 
 
-@server.tool()
+@tool(server)
 async def run_task(task: str) -> dict:
     """Do a long, multi-step task end to end (research with web search, compare options, or build a web page/game)
     and return a short spoken summary plus any page link."""
@@ -158,6 +159,15 @@ async def run_task(task: str) -> dict:
              for p in pages]
     secs = round(time.monotonic() - t0, 1)
     log.info("done in %.1fs, files=%s", secs, written)
+    for w in written:                           # the emulator renders the built page inline (iframe srcdoc)
+        if w.endswith(".html"):
+            try:
+                html = (WORKSPACE / w).read_text(encoding="utf-8")
+                if len(html) < 400_000:
+                    emulator_bus.emit("agent_page", path=w, link=links[0] if links else "",
+                                      task=task, page_html=html)
+            except Exception:  # noqa: BLE001
+                pass
     return {"ok": True, "summary": summary, "files": written, "links": links, "seconds": secs}
 
 

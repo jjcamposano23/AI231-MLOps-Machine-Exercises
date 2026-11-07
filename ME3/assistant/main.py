@@ -40,7 +40,7 @@ from pipecat.workers.runner import WorkerRunner
 from assistant.config import Config, load
 from assistant.echo_filter import make_echo_guard
 from assistant.mcp_link import McpLink, ensure_servers, stop_children
-from assistant.observers import LatencyObserver
+from assistant.observers import EmulatorObserver, LatencyObserver
 from assistant.services import McpSTTService, McpTTSService
 
 
@@ -150,12 +150,15 @@ class Assistant:
         stages += [user_agg, llm] + ([tracker] if tracker is not None else []) + [tts, transport.output()]
         pipeline = Pipeline(stages + [assistant_agg])
         session = uuid.uuid4().hex[:8]
+        self._session = session
+        self._benchmark = benchmark
         self.worker = PipelineWorker(
             pipeline,
             params=PipelineParams(enable_metrics=True, enable_usage_metrics=True,
                                   audio_in_sample_rate=cfg.audio_in_sample_rate,
                                   audio_out_sample_rate=cfg.audio_out_sample_rate),
-            observers=[LatencyObserver(cfg.latency_log, cfg.turns_log, session)])
+            observers=[LatencyObserver(cfg.latency_log, cfg.turns_log, session)]
+            + ([] if benchmark else [EmulatorObserver(session)]))
         self._greet = cfg.greet and not benchmark
         logger.info(f"Iris ready: LLM {cfg.llm_provider}/{cfg.llm_model}, {len(tools)} tools, "
                     f"turn stop={cfg.turn_stop}, agent={'on' if use_agent else 'off'}, session {session}")
@@ -242,10 +245,22 @@ class Assistant:
                     msg = f"Your {label} timer is done." if label and label != "timer" else "Your timer is done."
                 await self.worker.queue_frames([TTSSpeakFrame(msg)])
 
+    async def _heartbeat(self) -> None:
+        """Tell the web emulator this Iris is online (session start, then every 15 s)."""
+        from mcp_servers import emulator_bus
+        cfg = self.cfg
+        emulator_bus.emit("session", session=self._session, bot=cfg.bot_name, llm=f"{cfg.llm_provider}/{cfg.llm_model}",
+                          voice=os.environ.get("TTS_VOICE", ""), asr=os.environ.get("ASR_MODEL", "nova-3"))
+        while True:
+            await asyncio.sleep(15)
+            emulator_bus.emit("heartbeat", session=self._session)
+
     async def run(self) -> None:
         runner = WorkerRunner(handle_sigint=self._standalone)
         await runner.add_workers(self.worker)
         self._bg.append(asyncio.create_task(self._poll_due()))
+        if not getattr(self, "_benchmark", False):
+            self._bg.append(asyncio.create_task(self._heartbeat()))
         if self._greet:
             await self.worker.queue_frames([TTSSpeakFrame(f"Hi, I'm {self.cfg.bot_name}. What can I do for you?")])
         try:

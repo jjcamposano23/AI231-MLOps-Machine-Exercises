@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "iris": {
+      "events": {
+        ".read": true,
+        ".indexOn": ["ts"]
+      }
+    }
+  }
+}

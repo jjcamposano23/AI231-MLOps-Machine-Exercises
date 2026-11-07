@@ -120,10 +120,93 @@ class LatencyObserver(BaseObserver):
                        "tools": [{"name": x["name"], "ms": x.get("ms")} for x in self._tools],
                        "text": " ".join(self._text)}
                 self._write(self._lat, rec)
+                try:
+                    from mcp_servers import emulator_bus
+                    emulator_bus.emit("turn", **{k: v for k, v in rec.items() if not k.startswith("mono")})
+                except Exception:  # noqa: BLE001
+                    pass
             self._reset()
         elif isinstance(f, F.BotStoppedSpeakingFrame):
             self._bot_speaking = False
             if self._barge_start is not None:
                 self._write(self._lat, {"session": self._session, "event": "barge_in",
                                         "barge_in_ms": _ms(now, self._barge_start)})
+                try:
+                    from mcp_servers import emulator_bus
+                    emulator_bus.emit("barge_in_ms", ms=_ms(now, self._barge_start), session=self._session)
+                except Exception:  # noqa: BLE001
+                    pass
                 self._barge_start = None
+
+
+class EmulatorObserver(BaseObserver):
+    """Feeds the web emulator (mcp_servers/emulator_bus): what the user said (after the echo filter), what Iris
+    said, tool calls, and Iris's state (listening / thinking / speaking / idle)."""
+
+    def __init__(self, session: str, **kwargs):
+        super().__init__(**kwargs)
+        from mcp_servers import emulator_bus
+        self._bus = emulator_bus
+        self._session = session
+        self._seen: deque = deque(maxlen=4096)
+        self._seen_set: set = set()
+        self._tools: set = set()
+        self._reply: list[str] = []
+        self._bot_speaking = False
+        self._status = ""
+
+    def _first(self, frame, tag: str = "") -> bool:
+        fid = (getattr(frame, "id", id(frame)), tag)
+        if fid in self._seen_set:
+            return False
+        if len(self._seen) == self._seen.maxlen:
+            self._seen_set.discard(self._seen[0])
+        self._seen.append(fid)
+        self._seen_set.add(fid)
+        return True
+
+    def _state(self, s: str) -> None:
+        if s != self._status:
+            self._status = s
+            self._bus.emit("status", state=s, session=self._session)
+
+    async def on_push_frame(self, data):
+        f = data.frame
+        src = type(data.source).__name__
+        dst = type(data.destination).__name__
+        if isinstance(f, F.TranscriptionFrame):
+            if "UserAggregator" in dst and self._first(f, "user"):
+                self._bus.emit("user", text=f.text, session=self._session)
+        elif isinstance(f, F.LLMTextFrame):
+            if "LLMService" in src and self._first(f):
+                self._reply.append(f.text)
+        elif isinstance(f, F.LLMFullResponseEndFrame):
+            if "LLMService" in src and self._first(f):
+                text = "".join(self._reply).strip()
+                self._reply = []
+                if text:
+                    self._bus.emit("iris", text=text, session=self._session)
+        elif isinstance(f, F.TTSSpeakFrame):
+            if self._first(f):
+                self._bus.emit("iris", text=f.text, aside=True, session=self._session)
+        elif isinstance(f, F.FunctionCallInProgressFrame):
+            if f.tool_call_id not in self._tools:
+                self._tools.add(f.tool_call_id)
+                self._bus.emit("llm_tool", name=f.function_name, args=getattr(f, "arguments", None),
+                               id=f.tool_call_id, session=self._session)
+        elif isinstance(f, F.VADUserStartedSpeakingFrame):
+            if self._first(f):
+                if self._bot_speaking:
+                    self._bus.emit("barge_in", session=self._session)
+                self._state("listening")
+        elif isinstance(f, F.VADUserStoppedSpeakingFrame):
+            if self._first(f):
+                self._state("thinking")
+        elif isinstance(f, F.BotStartedSpeakingFrame):
+            if self._first(f):
+                self._bot_speaking = True
+                self._state("speaking")
+        elif isinstance(f, F.BotStoppedSpeakingFrame):
+            if self._first(f):
+                self._bot_speaking = False
+                self._state("idle")

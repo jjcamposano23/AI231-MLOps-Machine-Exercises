@@ -23,7 +23,7 @@ from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
 
-from mcp_servers.common import DATA, ROOT, get_logger, load_env, serve
+from mcp_servers.common import DATA, ROOT, get_logger, load_env, serve, tool
 
 load_env()
 log = get_logger("home")
@@ -87,11 +87,15 @@ def _show(line1: str, line2: str = "") -> None:
             log.warning("oled: %s", e)
 
 
+def _snapshot() -> dict:
+    return {**state, "music": dict(state["music"]), "hardware": _hw()}
+
+
 server = MCPServer("home", instructions="Controls the room: lights (LED strip), colour, brightness, thermostat "
                                         "display, a small screen, and music.")
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def set_lights(on: bool) -> dict:
     """Turn the room lights (LED strip) on or off."""
     with _lock:
@@ -101,7 +105,7 @@ def set_lights(on: bool) -> dict:
     return {"ok": True, "light_on": state["light_on"], "hardware": strip is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def set_light_color(color: str) -> dict:
     """Set the light colour by name (white, warm white, red, green, blue, yellow, orange, purple, pink, cyan)
     or hex like '#ff8800'. Turns the lights on."""
@@ -119,7 +123,7 @@ def set_light_color(color: str) -> dict:
     return {"ok": True, "color": c, "hardware": strip is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def set_brightness(percent: int) -> dict:
     """Set the light brightness from 1 to 100 percent. Turns the lights on."""
     p = max(1, min(100, int(percent)))
@@ -132,7 +136,7 @@ def set_brightness(percent: int) -> dict:
     return {"ok": True, "brightness_pct": p, "hardware": strip is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def set_thermostat(degrees_c: int) -> dict:
     """Set the air-conditioner / thermostat target temperature in Celsius (16-30)."""
     t = max(16, min(30, int(degrees_c)))
@@ -144,7 +148,7 @@ def set_thermostat(degrees_c: int) -> dict:
     return {"ok": True, "thermostat_c": t, "hardware": seg is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def show_countdown(seconds: int) -> dict:
     """Show a live countdown on the 4-digit display (use together with a timer)."""
     s = max(1, min(5999, int(seconds)))
@@ -154,14 +158,14 @@ def show_countdown(seconds: int) -> dict:
     return {"ok": True, "seconds": s, "hardware": seg is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def show_message(line1: str, line2: str = "") -> dict:
     """Show up to two short lines of text on the small OLED screen."""
     _show(line1[:18], line2[:18])
     return {"ok": True, "hardware": oled is not None}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def get_home_state() -> dict:
     """Current state of lights, thermostat, display and music, plus which hardware is physically attached."""
     return {**state, "hardware": _hw()}
@@ -212,7 +216,7 @@ def _stop() -> None:
     _mpv = None
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def play_music(query: str = "") -> dict:
     """Play music. Optional query matches a song/artist/genre in the music folder; empty plays a random song."""
     global _playlist, _idx
@@ -230,7 +234,7 @@ def play_music(query: str = "") -> dict:
     return {"ok": True, "playing": _playlist[0].stem, "hardware": real}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def pause_music() -> dict:
     """Pause the music (call resume_music to continue)."""
     _mpv_cmd("set_property", "pause", True)
@@ -238,7 +242,7 @@ def pause_music() -> dict:
     return {"ok": True}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def resume_music() -> dict:
     """Resume paused music."""
     _mpv_cmd("set_property", "pause", False)
@@ -246,7 +250,7 @@ def resume_music() -> dict:
     return {"ok": True}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def stop_music() -> dict:
     """Stop the music completely."""
     _stop()
@@ -254,7 +258,7 @@ def stop_music() -> dict:
     return {"ok": True}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def next_song() -> dict:
     """Skip to the next song."""
     global _idx
@@ -266,7 +270,7 @@ def next_song() -> dict:
     return {"ok": True, "playing": _playlist[_idx].stem}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def change_volume(delta_percent: int) -> dict:
     """Turn the music volume up (positive, e.g. 15) or down (negative, e.g. -15)."""
     v = max(0, min(100, state["music"]["volume"] + int(delta_percent)))

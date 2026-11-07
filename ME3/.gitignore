@@ -8,3 +8,5 @@ fd-benchmark/
 refs/
 ChatExport_*/
 *.pyc
+firebase-debug.log
+.firebase/

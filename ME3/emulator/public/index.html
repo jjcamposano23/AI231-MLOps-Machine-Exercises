@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iris Emulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1220; --panel:#121b2e; --panel2:#17223a; --line:#24314d; --ink:#e7ecf5; --muted:#8b98b3;
+  --orange:#f08a3c; --teal:#2fb5c4; --green:#3ccf8e; --red:#ff5d5d; --navy:#16243f;
+  --assist:#2fb5c4; --home:#f0b13c; --agent:#b88cff; --llm:#7aa2ff;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+.mono{font-family:"JetBrains Mono",Consolas,monospace}
+
+/* ---------- header */
+header{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line);background:#0e1628;position:sticky;top:0;z-index:5;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd2ad,var(--orange) 45%,#a8461a);box-shadow:0 0 18px #f08a3c88}
+.brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.2px}
+.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#56627d}
+.dot.on{background:var(--green);box-shadow:0 0 10px var(--green)}
+.dot.warn{background:var(--orange)}
+.hbtn{padding:6px 12px;border-radius:9px;background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.hbtn:hover{color:var(--ink);border-color:#3a4a6e}
+
+/* ---------- layout */
+main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;padding:16px 20px 20px;max-width:1700px;margin:0 auto}
+.left{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;min-width:0;align-content:start}
+.left .room{grid-column:1/3;grid-row:1/3}
+#cAct{grid-column:1/-1;min-height:0}
+#activity:not(.empty){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-height:150px;position:relative;overflow:hidden}
+.card h3{margin:0 0 10px;font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px;font-weight:600}
+.card h3 .tag{margin-left:auto;font-size:10.5px;letter-spacing:.4px;text-transform:none;padding:2px 7px;border-radius:6px;background:var(--panel2);border:1px solid var(--line)}
+.empty{color:#5d6a86;font-size:13px}
+.flash{animation:flash 1.2s ease}
+@keyframes flash{0%{box-shadow:0 0 0 2px var(--orange),0 0 30px #f08a3c66}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ---------- room */
+.room{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:relative}
+.room{display:flex;background:#232d44}
+.room svg{display:block;width:100%;height:100%;aspect-ratio:2/1;min-height:220px}
+.room .caption{position:absolute;left:14px;top:12px;font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:#c3cde0;font-weight:600;text-shadow:0 1px 3px #000}
+.room .legend{position:absolute;right:12px;top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.room .legend span{font-size:11px;padding:3px 8px;border-radius:7px;background:#0b1220cc;border:1px solid var(--line);color:#c3cde0}
+.t-fade{transition:opacity .8s ease, fill .8s ease, stroke .8s ease}
+
+/* ---------- chat */
+.chat{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-height:0;height:calc(100vh - 100px);position:sticky;top:78px}
+.orbwrap{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--line)}
+.orb{width:54px;height:54px;border-radius:50%;position:relative;flex:none;background:radial-gradient(circle at 35% 30%,#ffd9b8,var(--orange) 40%,#7c2f10);box-shadow:0 0 22px #f08a3c55}
+.orb::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid transparent}
+.orb.idle{animation:breathe 3.5s ease-in-out infinite}
+.orb.listening{background:radial-gradient(circle at 35% 30%,#c9fbff,var(--teal) 42%,#0d5560);box-shadow:0 0 26px #2fb5c4aa}
+.orb.listening::after{border-color:var(--teal);animation:ripple 1.2s ease-out infinite}
+.orb.thinking{background:conic-gradient(from 0deg,var(--orange),var(--teal),#7aa2ff,var(--orange));animation:spin 1.1s linear infinite}
+.orb.speaking{animation:talk .35s ease-in-out infinite alternate;box-shadow:0 0 34px #f08a3ccc}
+@keyframes breathe{50%{transform:scale(.94);box-shadow:0 0 12px #f08a3c44}}
+@keyframes ripple{from{transform:scale(.9);opacity:1}to{transform:scale(1.45);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes talk{from{transform:scale(.96)}to{transform:scale(1.07)}}
+.orbtext b{font-size:16px;display:block}
+.orbtext span{color:var(--muted);font-size:12.5px}
+.msgs{flex:1;overflow-y:auto;padding:14px 14px 18px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:86%;padding:9px 12px;border-radius:14px;line-height:1.42;font-size:14px;animation:pop .25s ease}
+@keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+.msg.user{align-self:flex-end;background:#25407a;border-bottom-right-radius:4px}
+.msg.iris{align-self:flex-start;background:var(--panel2);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.aside{align-self:flex-start;font-style:italic;color:#c9b9a6;background:transparent;border:1px dashed #4a3b2d;font-size:13px}
+.who{font-size:11px;color:var(--muted);margin-bottom:2px;font-weight:600}
+.chip{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;font-size:12px;padding:4px 9px;border-radius:8px;background:#0d1526;border:1px solid var(--line);color:#c3cde0;max-width:92%;animation:pop .25s ease}
+.chip .srv{font-weight:700;font-size:10.5px;padding:1px 6px;border-radius:5px;color:#0b1220}
+.chip .st{color:var(--muted)}
+.chip.ok .st{color:var(--green)} .chip.err .st{color:var(--red)}
+.chip .spin{width:10px;height:10px;border:2px solid #56627d;border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+.lat{align-self:flex-start;font-size:11px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;margin:-3px 0 4px 2px}
+.lat span{padding:1px 6px;border-radius:5px;background:#0d1526;border:1px solid var(--line)}
+.lat span.good{color:var(--green)} .lat span.bad{color:var(--orange)}
+.barge{align-self:center;font-size:11.5px;color:#ffb3b3;background:#3a1c25;border:1px solid #6b2a39;padding:3px 10px;border-radius:999px}
+.sys{align-self:center;font-size:11.5px;color:var(--muted)}
+
+/* ---------- weather */
+.wx{display:flex;gap:14px;align-items:center}
+.wx svg{flex:none}
+.wx .temp{font-size:38px;font-weight:700;line-height:1}
+.wx .place{font-weight:600;margin-top:4px}
+.wx .cond{color:var(--muted);text-transform:capitalize}
+.wxgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.wxgrid div{background:var(--panel2);border-radius:8px;padding:6px 8px;font-size:12px;color:var(--muted)}
+.wxgrid b{display:block;color:var(--ink);font-size:14px}
+
+/* ---------- timers */
+.trow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1d2840}
+.trow:last-child{border-bottom:none}
+.trow .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--panel2);flex:none;font-size:15px}
+.trow .lb{flex:1;min-width:0}
+.trow .lb b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .lb span{font-size:12px;color:var(--muted)}
+.trow .cd{font-family:"JetBrains Mono",monospace;font-size:18px;font-weight:600;color:var(--orange)}
+.ring{animation:ring .25s ease-in-out 8}
+@keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+
+/* ---------- search / notes / agent / activity */
+.answer{line-height:1.45;font-size:13.5px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.q{font-size:12px;color:var(--muted);margin-bottom:6px}
+.q b{color:var(--ink)}
+.links{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.links a{color:#9fc3ff;text-decoration:none;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.links a:hover{text-decoration:underline}
+.note{font-size:13px;padding:6px 9px;background:#2a2615;border:1px solid #4d4421;border-radius:8px;color:#f6e7a8;margin-bottom:6px}
+.sms{font-size:13px;padding:6px 9px;background:#15283a;border:1px solid #23415e;border-radius:8px;margin-bottom:6px}
+.sms b{color:#9fc3ff}
+.sub{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin:8px 0 6px}
+.task{padding:9px 10px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);margin-bottom:8px}
+.task .tt{font-weight:600;font-size:13px}
+.task .meta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:7px}
+.task .sum{font-size:13px;margin-top:6px;line-height:1.4}
+.openbtn{margin-top:8px;padding:6px 11px;border-radius:8px;border:1px solid var(--agent);background:#2a2143;color:#e3d6ff;font-size:12.5px;font-weight:600}
+.act{font-size:12px;display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #1a2439;white-space:nowrap;overflow:hidden}
+.act .srv{font-weight:700;font-size:10px;padding:1px 6px;border-radius:5px;color:#0b1220;flex:none}
+.act code{color:#c3cde0;overflow:hidden;text-overflow:ellipsis;font-family:"JetBrains Mono",monospace;font-size:11.5px}
+.act .ms{margin-left:auto;color:var(--muted);flex:none}
+.music{display:flex;gap:12px;align-items:center}
+.eq{display:flex;gap:3px;align-items:flex-end;height:28px}
+.eq i{width:4px;background:var(--home);border-radius:2px;height:6px}
+.eq.on i{animation:eq .9s ease-in-out infinite alternate}
+.eq.on i:nth-child(2){animation-delay:.2s}.eq.on i:nth-child(3){animation-delay:.45s}.eq.on i:nth-child(4){animation-delay:.1s}.eq.on i:nth-child(5){animation-delay:.3s}
+@keyframes eq{from{height:5px}to{height:28px}}
+.vol{height:6px;border-radius:3px;background:#24314d;margin-top:6px;overflow:hidden}
+.vol i{display:block;height:100%;background:var(--home);transition:width .6s}
+
+/* ---------- toast + modal + setup */
+#toasts{position:fixed;left:50%;top:76px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:20;pointer-events:none}
+.toast{background:#1b2742;border:1px solid var(--orange);color:var(--ink);padding:10px 16px;border-radius:12px;font-weight:600;box-shadow:0 10px 30px #0008;animation:pop .3s ease}
+.modal{position:fixed;inset:0;background:#05080fcc;display:none;align-items:center;justify-content:center;z-index:30;padding:20px}
+.modal.show{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:min(1000px,100%);height:min(720px,100%);display:flex;flex-direction:column;overflow:hidden}
+.modal .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.modal iframe{flex:1;border:0;background:#fff;width:100%}
+.setup .box{height:auto;max-width:560px;padding:22px}
+.setup h2{margin:0 0 6px}
+.setup p{color:var(--muted);line-height:1.5;margin:6px 0 14px}
+.setup label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+.setup input{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:#0b1220;color:var(--ink);font:13px "JetBrains Mono",monospace}
+.setup .row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{padding:9px 14px;border-radius:10px;border:1px solid var(--orange);background:var(--orange);color:#1a0d03;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+
+@media (max-width:1100px){
+  main{grid-template-columns:minmax(0,1fr)}
+  .left{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .left .room{grid-column:1/-1;grid-row:auto}
+  .chat{position:static;height:560px}
+}
+@media (max-width:760px){
+  main{padding:12px 16px}
+  .left{grid-template-columns:minmax(0,1fr)}
+  #activity:not(.empty){grid-template-columns:minmax(0,1fr)}
+  .room .legend{display:none}
+  .pill{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  header{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo"></div><div><h1>Iris Emulator</h1><small>live view of the voice agent on the Raspberry Pi 4</small></div></div>
+  <div class="spacer"></div>
+  <span class="pill" id="connPill"><span class="dot" id="connDot"></span><span id="connText">connecting…</span></span>
+  <span class="pill"><span class="dot" id="piDot"></span><span id="piText">Pi: waiting</span></span>
+  <button class="hbtn" id="btnDemo" title="Play a scripted demo (no Pi needed)">Demo replay</button>
+  <button class="hbtn" id="btnClear" title="Start a fresh screen">Clear</button>
+  <button class="hbtn" id="btnFull">Fullscreen</button>
+</header>
+
+<main>
+  <div class="left">
+    <section class="room" id="roomCard">
+      <div class="caption">Room · home-mcp actuators</div>
+      <div class="legend"><span id="lgLight">Lights off</span><span id="lgThermo">Thermostat –</span><span id="lgMusic">Music off</span></div>
+      <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMax meet" id="room" style="overflow:visible" role="img" aria-label="Emulated room with lights, displays, thermostat and speaker">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#fff" stop-opacity=".9"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+          <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity=".55"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0c1a3a"/><stop offset="100%" stop-color="#27406e"/></linearGradient>
+          <filter id="blur8"><feGaussianBlur stdDeviation="8"/></filter>
+          <filter id="blur3"><feGaussianBlur stdDeviation="3"/></filter>
+        </defs>
+        <!-- wall + floor -->
+        <rect x="-800" y="-600" width="2400" height="1000" fill="#232d44"/>
+        <rect x="-800" y="318" width="2400" height="300" fill="#1a2132"/>
+        <rect x="-800" y="316" width="2400" height="4" fill="#2c3854"/>
+        <!-- window -->
+        <rect x="56" y="74" width="150" height="128" rx="4" fill="url(#sky)" stroke="#3b4a6b" stroke-width="6"/>
+        <line x1="131" y1="74" x2="131" y2="202" stroke="#3b4a6b" stroke-width="4"/><line x1="56" y1="138" x2="206" y2="138" stroke="#3b4a6b" stroke-width="4"/>
+        <circle cx="178" cy="98" r="9" fill="#e8ecf8" opacity=".85"/>
+        <g fill="#dfe6ff" opacity=".7"><circle cx="78" cy="92" r="1.3"/><circle cx="104" cy="114" r="1.1"/><circle cx="152" cy="160" r="1.2"/><circle cx="88" cy="176" r="1"/></g>
+        <!-- LED strip (WS2812) -->
+        <line id="stripGlow" class="t-fade" x1="30" y1="34" x2="770" y2="34" stroke="#fff" stroke-width="22" opacity="0" filter="url(#blur8)"/>
+        <g id="stripLeds"></g>
+        <text x="770" y="56" text-anchor="end" font-size="10" fill="#8b98b3" font-family="Inter">WS2812 strip</text>
+        <!-- pendant lamp -->
+        <line x1="560" y1="-600" x2="560" y2="66" stroke="#4a5674" stroke-width="2"/>
+        <polygon id="cone" class="t-fade" points="532,92 588,92 700,318 420,318" fill="url(#cone)" opacity="0"/>
+        <path d="M528 92 Q560 54 592 92 Z" fill="#3b4763"/>
+        <circle id="bulb" class="t-fade" cx="560" cy="93" r="8" fill="#56627d"/>
+        <!-- whole-room light wash -->
+        <rect id="wash" class="t-fade" x="-800" y="-600" width="2400" height="1200" fill="#fff" opacity="0" style="mix-blend-mode:soft-light"/>
+        <!-- sofa -->
+        <rect x="250" y="252" width="250" height="70" rx="16" fill="#3a4e7c"/>
+        <rect x="262" y="226" width="226" height="44" rx="14" fill="#44598a"/>
+        <rect x="236" y="244" width="30" height="78" rx="12" fill="#344670"/><rect x="484" y="244" width="30" height="78" rx="12" fill="#344670"/>
+        <!-- plant -->
+        <path d="M712 318 l-10 -46 h44 l-10 46 z" fill="#8a5a3c"/>
+        <g fill="#3f9a6a"><ellipse cx="712" cy="250" rx="10" ry="26" transform="rotate(-25 712 250)"/><ellipse cx="736" cy="246" rx="10" ry="28" transform="rotate(22 736 246)"/><ellipse cx="724" cy="236" rx="9" ry="30"/></g>
+        <!-- OLED -->
+        <g transform="translate(250,96)">
+          <rect width="170" height="78" rx="8" fill="#0e1422" stroke="#4a5674" stroke-width="3"/>
+          <rect x="10" y="10" width="150" height="58" rx="3" fill="#000"/>
+          <text id="oled1" x="18" y="34" font-size="15" fill="#8fe9ff" font-family="JetBrains Mono, monospace">Iris ME3</text>
+          <text id="oled2" x="18" y="56" font-size="13" fill="#8fe9ff" font-family="JetBrains Mono, monospace" opacity=".85">ready</text>
+          <text x="85" y="94" text-anchor="middle" font-size="10" fill="#8b98b3" font-family="Inter">SSD1306 OLED</text>
+        </g>
+        <!-- TM1637 -->
+        <g transform="translate(440,104)">
+          <rect width="150" height="58" rx="7" fill="#101622" stroke="#4a5674" stroke-width="3"/>
+          <g id="seg" transform="translate(13,9)"></g>
+          <text x="75" y="76" text-anchor="middle" font-size="10" fill="#8b98b3" font-family="Inter" id="segLabel">TM1637 · clock</text>
+        </g>
+        <!-- thermostat -->
+        <g transform="translate(676,150)">
+          <circle r="40" fill="#151d2e" stroke="#4a5674" stroke-width="3"/>
+          <circle id="thermoRing" r="33" fill="none" stroke="#3a4560" stroke-width="5" class="t-fade"/>
+          <text id="thermoTxt" y="8" text-anchor="middle" font-size="22" font-weight="700" fill="#e7ecf5" font-family="Inter">–</text>
+          <text y="58" text-anchor="middle" font-size="10" fill="#8b98b3" font-family="Inter">Thermostat</text>
+        </g>
+        <!-- speaker -->
+        <g transform="translate(96,236)">
+          <rect width="62" height="84" rx="9" fill="#141b2b" stroke="#4a5674" stroke-width="3"/>
+          <circle cx="31" cy="28" r="12" fill="#0b0f19" stroke="#4a5674" stroke-width="2"/>
+          <circle cx="31" cy="60" r="16" fill="#0b0f19" stroke="#4a5674" stroke-width="2"/>
+          <g id="waves" opacity="0" class="t-fade" fill="none" stroke="#f0b13c" stroke-width="3" stroke-linecap="round">
+            <path d="M74 30 q10 14 0 28"><animate attributeName="opacity" values="1;.2;1" dur="1s" repeatCount="indefinite"/></path>
+            <path d="M86 22 q16 22 0 44"><animate attributeName="opacity" values=".2;1;.2" dur="1s" repeatCount="indefinite"/></path>
+          </g>
+          <text x="31" y="100" text-anchor="middle" font-size="10" fill="#8b98b3" font-family="Inter">Speaker</text>
+        </g>
+        <!-- darkness when lights are off -->
+        <rect id="dark" class="t-fade" x="-800" y="-600" width="2400" height="1200" fill="#050912" opacity=".58" pointer-events="none"/>
+      </svg>
+    </section>
+
+      <section class="card" id="cWeather"><h3>Weather <span class="tag">assist · get_weather</span></h3><div id="weather" class="empty">Ask “What's the weather in Davao?”</div></section>
+      <section class="card" id="cTimers"><h3>Timers · alarms · reminders <span class="tag">assist</span></h3><div id="timers" class="empty">Nothing scheduled.</div></section>
+      <section class="card" id="cSearch"><h3>Web search <span class="tag">assist · Tavily</span></h3><div id="search" class="empty">Ask about news, prices, schedules…</div></section>
+      <section class="card" id="cAgent"><h3>Background agent <span class="tag">agent · run_task</span></h3><div id="agent" class="empty">“Build me a flappy bird game” runs here while Iris keeps talking.</div></section>
+      <section class="card" id="cNotes"><h3>Music · notes · messages <span class="tag">home + assist</span></h3><div id="notes"></div></section>
+      <section class="card" id="cAct"><h3>MCP activity <span class="tag" id="actCount">0 calls</span></h3><div id="activity" class="empty">Every MCP tool call shows up here.</div></section>
+  </div>
+
+  <aside class="chat">
+    <div class="orbwrap"><div class="orb idle" id="orb"></div><div class="orbtext"><b id="orbState">Idle</b><span id="orbSub">Say “Iris…” and talk naturally — no push-to-talk</span></div></div>
+    <div class="msgs" id="msgs"><div class="sys">Conversation will appear here.</div></div>
+  </aside>
+</main>
+
+<div id="toasts"></div>
+
+<div class="modal" id="pageModal"><div class="box">
+  <div class="bar"><b id="pageTitle">Built by the agent</b><span class="spacer"></span><button class="hbtn" id="pageClose">Close</button></div>
+  <iframe id="pageFrame" sandbox="allow-scripts allow-pointer-lock" title="Page built by Iris's background agent"></iframe>
+</div></div>
+
+<div class="modal setup" id="setup"><div class="box">
+  <h2>Connect to Firebase</h2>
+  <p>Paste the Firebase <b>Realtime Database URL</b> (safe to share — the page can only read events). The Pi writes events with its own database secret.</p>
+  <label for="inDb">Realtime Database URL</label><input id="inDb" placeholder="https://<project>-default-rtdb.<region>.firebasedatabase.app">
+  <div class="row"><button class="btn" id="saveCfg">Connect</button><button class="btn ghost" id="demoFromSetup">Run demo replay instead</button></div>
+</div></div>
+
+<script>
+/* ===== config: the database URL (public), or pass ?db=… once (remembered in this browser) ===== */
+const CONFIG = { db: "https://iris-me3-emulator-default-rtdb.asia-southeast1.firebasedatabase.app" };   // Firebase Realtime Database URL, e.g. https://<project>-default-rtdb.asia-southeast1.firebasedatabase.app
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
+const SRV_COLOR = { assist:"var(--assist)", home:"var(--home)", agent:"var(--agent)", llm:"var(--llm)" };
+const TOOL_SERVER = { delegate_task:"agent", run_task:"agent" };
+
+/* ================================================================ state */
+const S = {
+  home:{ light_on:false, color:"white", rgb:[255,255,255], brightness_pct:100, thermostat_c:null, display:"Iris ME3 | ready",
+         music:{ playing:false, paused:false, track:null, volume:60 } },
+  countdownEnd:null, assist:{ pending:[], notes:[], outbox:[] }, weather:null, search:null,
+  agent:[], activity:[], actCount:0, lastSeen:0, session:null, live:false,
+};
+let replaying = false;
+
+/* ================================================================ room rendering */
+const NLED = 24;
+(function buildStrip(){ let h=""; for(let i=0;i<NLED;i++){ const x=40+i*(720/(NLED-1)); h+=`<circle class="t-fade" cx="${x}" cy="34" r="5" fill="#3a4560"/>`; } $("stripLeds").innerHTML=h; })();
+
+const SEGS = {"0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc","5":"afgcd","6":"afgedc","7":"abc","8":"abcdefg","9":"abcdfg","-":"g"," ":""};
+function segDigit(ch, x, on){
+  const P = { a:[[4,0],[20,0],[17,4],[7,4]], b:[[21,1],[21,18],[17,15],[17,5]], c:[[21,22],[21,39],[17,35],[17,25]],
+              d:[[4,40],[20,40],[17,36],[7,36]], e:[[3,22],[3,39],[7,35],[7,25]], f:[[3,1],[3,18],[7,15],[7,5]],
+              g:[[5,20],[19,20],[16,23],[8,23],[5,20]] };
+  let h=""; const lit=SEGS[ch]||"";
+  for(const k of "abcdefg"){ const pts=P[k].map(p=>`${p[0]+x},${p[1]}`).join(" ");
+    h+=`<polygon points="${pts}" fill="${lit.includes(k)?on:"#2a1515"}"/>`; }
+  return h;
+}
+function renderSeg(text, colon, color="#ff3b30"){
+  const t=(text+"    ").slice(0,4); let h="";
+  [0,30,70,100].forEach((x,i)=>{ h+=segDigit(t[i],x,color); });
+  h+=`<circle cx="59" cy="13" r="2.6" fill="${colon?color:"#2a1515"}"/><circle cx="59" cy="28" r="2.6" fill="${colon?color:"#2a1515"}"/>`;
+  $("seg").innerHTML=h;
+}
+function tickSeg(){
+  const now=Date.now()/1000;
+  if(S.countdownEnd && S.countdownEnd>now){
+    const r=Math.ceil(S.countdownEnd-now), m=Math.floor(r/60), s=r%60;
+    renderSeg((m>99?"99":String(m).padStart(2," "))+String(s).padStart(2,"0"), true, "#ff3b30");
+    $("segLabel").textContent="TM1637 · countdown";
+  } else {
+    if(S.countdownEnd && S.countdownEnd<=now && now-S.countdownEnd<6){ renderSeg(Math.floor(now*2)%2?"0000":"    ", true); $("segLabel").textContent="TM1637 · done!"; return; }
+    const d=new Date(); renderSeg(String(d.getHours()).padStart(2," ")+String(d.getMinutes()).padStart(2,"0"), d.getSeconds()%2===0, "#ff6b3d");
+    $("segLabel").textContent="TM1637 · clock";
+  }
+}
+
+function rgbOf(h){ const c=h.rgb||[255,255,255]; const k=Math.max(.15,(h.brightness_pct??100)/100); return {css:`rgb(${c[0]},${c[1]},${c[2]})`, k}; }
+function renderRoom(){
+  const h=S.home, {css,k}=rgbOf(h), on=!!h.light_on;
+  $("dark").setAttribute("opacity", on ? (0.30*(1-k)).toFixed(2) : "0.62");
+  $("wash").setAttribute("fill", css); $("wash").setAttribute("opacity", on ? (0.55*k).toFixed(2) : "0");
+  $("stripGlow").setAttribute("stroke", css); $("stripGlow").setAttribute("opacity", on ? (0.9*k).toFixed(2) : "0");
+  $("bulb").setAttribute("fill", on ? css : "#56627d");
+  document.querySelectorAll("#stripLeds circle").forEach(c=>c.setAttribute("fill", on ? css : "#3a4560"));
+  $("cone").setAttribute("fill", css); $("cone").setAttribute("opacity", on ? (0.22*k).toFixed(2) : "0");
+  const [l1,l2]=(h.display||"").split(" | ");
+  $("oled1").textContent=(l1||"").slice(0,15); $("oled2").textContent=(l2||"").slice(0,17);
+  const t=h.thermostat_c;
+  $("thermoTxt").textContent = t==null ? "–" : `${t}°`;
+  $("thermoRing").setAttribute("stroke", t==null ? "#3a4560" : t<=22 ? "#4ea8ff" : t<=26 ? "#3ccf8e" : "#ff8a3c");
+  const m=h.music||{};
+  $("waves").setAttribute("opacity", m.playing && !m.paused ? "1" : "0");
+  $("lgLight").textContent = on ? `Lights on · ${h.color} · ${h.brightness_pct}%` : "Lights off";
+  $("lgThermo").textContent = t==null ? "Thermostat –" : `Thermostat ${t} °C`;
+  $("lgMusic").textContent = m.playing ? (m.paused ? `Paused · ${m.track||""}` : `♪ ${m.track||"playing"}`) : "Music off";
+}
+
+/* ================================================================ cards */
+function wxIcon(cond){
+  const c=(cond||"").toLowerCase();
+  const sun=`<circle cx="32" cy="30" r="12" fill="#ffc94a"/><g stroke="#ffc94a" stroke-width="3" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const r=a*Math.PI/180;return `<line x1="${32+18*Math.cos(r)}" y1="${30+18*Math.sin(r)}" x2="${32+24*Math.cos(r)}" y2="${30+24*Math.sin(r)}"/>`}).join("")}</g>`;
+  const cloud=(x=0,y=0,f="#c9d4e8")=>`<path transform="translate(${x},${y})" d="M18 46 h32 a10 10 0 0 0 0-20 a14 14 0 0 0-27-3 a11 11 0 0 0-5 23 z" fill="${f}"/>`;
+  let g;
+  if(/thunder/.test(c)) g=cloud(0,0,"#8e9bb5")+`<path d="M34 46 l-6 12 h7 l-4 10 l12-15 h-7 l4-7z" fill="#ffd34a"/>`;
+  else if(/rain|drizzle|shower/.test(c)) g=cloud(0,-4,"#9fb0cc")+`<g stroke="#5fb4ff" stroke-width="3" stroke-linecap="round"><line x1="24" y1="50" x2="21" y2="58"/><line x1="34" y1="50" x2="31" y2="60"/><line x1="44" y1="50" x2="41" y2="58"/></g>`;
+  else if(/snow/.test(c)) g=cloud(0,-4)+`<g fill="#fff"><circle cx="24" cy="54" r="2.5"/><circle cx="34" cy="58" r="2.5"/><circle cx="44" cy="54" r="2.5"/></g>`;
+  else if(/fog/.test(c)) g=`<g stroke="#b9c4d8" stroke-width="4" stroke-linecap="round"><line x1="12" y1="28" x2="52" y2="28"/><line x1="8" y1="38" x2="48" y2="38"/><line x1="14" y1="48" x2="54" y2="48"/></g>`;
+  else if(/overcast|cloud/.test(c)) g=(/partly|mainly/.test(c)?`<g transform="translate(-6,-6)">${sun}</g>`:"")+cloud(4,0);
+  else g=sun;
+  return `<svg width="70" height="66" viewBox="0 0 64 64" aria-hidden="true">${g}</svg>`;
+}
+function renderWeather(){
+  const w=S.weather; if(!w){return;}
+  const r=w.result||{};
+  if(r.error){ $("weather").innerHTML=`<div class="empty">${esc(r.error)}</div>`; return; }
+  $("weather").className="";
+  $("weather").innerHTML=`<div class="wx">${wxIcon(r.now)}<div><div class="temp">${Math.round(r.temp_c)}°C</div><div class="place">${esc(r.place)}</div><div class="cond">${esc(r.now)}</div></div></div>
+   <div class="wxgrid"><div>Feels<b>${Math.round(r.feels_like_c)}°</b></div><div>High / low<b>${Math.round(r.today_high_c)}° / ${Math.round(r.today_low_c)}°</b></div><div>Rain<b>${r.rain_chance_pct ?? "–"}%</b></div>
+   <div>Humidity<b>${r.humidity_pct ?? "–"}%</b></div><div>Wind<b>${Math.round(r.wind_kmh ?? 0)} km/h</b></div><div>Updated<b>${new Date((w.t||Date.now()/1000)*1000).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}</b></div></div>`;
+}
+function fmtLeft(s){ s=Math.max(0,Math.round(s)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60;
+  return h ? `${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}` : `${m}:${String(x).padStart(2,"0")}`; }
+function renderTimers(){
+  const p=S.assist.pending||[], now=Date.now()/1000, el=$("timers");
+  if(!p.length){ el.className="empty"; el.textContent="Nothing scheduled."; return; }
+  el.className="";
+  el.innerHTML=p.map(i=>`<div class="trow"><div class="ic">${i.kind==="alarm"?"⏰":i.kind==="reminder"?"📌":"⏱️"}</div>
+     <div class="lb"><b>${esc(i.label||i.kind)}</b><span>${esc(i.kind)} · ${esc(i.due_local||"")}</span></div>
+     <div class="cd">${fmtLeft(i.due-now)}</div></div>`).join("");
+}
+function renderSearch(){
+  const s=S.search; if(!s) return; const r=s.result||{};
+  $("search").className="";
+  $("search").innerHTML=`<div class="q">Query: <b>${esc(s.args?.query)}</b></div>
+    <div class="answer">${esc(r.answer || r.error || "No direct answer — see the results.")}</div>
+    <div class="links">${(r.results||[]).slice(0,3).map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">↗ ${esc(x.title)}</a>`).join("")}</div>`;
+}
+function renderNotes(){
+  const m=S.home.music||{}, a=S.assist, el=$("notes");
+  const vol=Math.max(0,Math.min(100,m.volume??60));
+  let h=`<div class="music"><div class="eq ${m.playing&&!m.paused?"on":""}"><i></i><i></i><i></i><i></i><i></i></div>
+    <div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.playing?esc(m.track||"Playing"):"No music"}</b>
+    <span style="font-size:12px;color:var(--muted)">${m.playing?(m.paused?"paused":"playing"):"stopped"} · volume ${vol}%</span><div class="vol"><i style="width:${vol}%"></i></div></div></div>`;
+  if((a.notes||[]).length) h+=`<div class="sub">Notes</div>`+a.notes.slice(-3).reverse().map(n=>`<div class="note">📝 ${esc(n.text)}</div>`).join("");
+  if((a.outbox||[]).length) h+=`<div class="sub">Messages sent</div>`+a.outbox.slice(-2).reverse().map(n=>`<div class="sms">✉️ <b>${esc(n.to)}</b>: ${esc(n.text)}</div>`).join("");
+  el.innerHTML=h;
+}
+function renderAgent(){
+  const el=$("agent"); if(!S.agent.length) return; el.className="";
+  const now=Date.now()/1000;
+  el.innerHTML=S.agent.slice(-2).reverse().map((t,i)=>{
+    const idx=S.agent.length-1-i;
+    const meta = t.status==="running" ? `<span class="chip" style="padding:2px 7px"><span class="spin"></span>working · ${fmtLeft(now-t.started)}</span>`
+               : t.status==="error" ? `<span style="color:var(--red)">failed</span>` : `<span style="color:var(--green)">done in ${t.seconds ?? "?"} s</span>`;
+    return `<div class="task"><div class="tt">${esc(t.task)}</div><div class="meta">${meta}</div>
+      ${t.summary?`<div class="sum">${esc(t.summary)}</div>`:""}
+      ${t.html?`<button class="openbtn" data-agent="${idx}">▶ Open what Iris built</button>`:(t.link?`<div class="meta">${esc(t.link)}</div>`:"")}</div>`;
+  }).join("");
+  el.querySelectorAll("[data-agent]").forEach(b=>b.onclick=()=>openPage(S.agent[+b.dataset.agent]));
+}
+function renderActivity(){
+  const el=$("activity"); $("actCount").textContent=`${S.actCount} call${S.actCount===1?"":"s"}`;
+  if(!S.activity.length) return; el.className="";
+  el.innerHTML=S.activity.slice(-10).reverse().map(a=>`<div class="act"><span class="srv" style="background:${SRV_COLOR[a.server]||"#888"}">${esc(a.server)}</span>
+    <code>${esc(a.tool)}(${esc(argStr(a.args))})</code><span class="ms">${a.error?"✗":"✓"} ${a.ms ?? ""} ms</span></div>`).join("");
+}
+function argStr(a){ if(!a||typeof a!=="object") return ""; return Object.entries(a).map(([k,v])=>`${k}=${typeof v==="string"?JSON.stringify(v.length>28?v.slice(0,28)+"…":v):JSON.stringify(v)}`).join(", "); }
+
+function openPage(t){ $("pageTitle").textContent=`Built by the agent · ${t.path||t.task}`; $("pageFrame").srcdoc=t.html; $("pageModal").classList.add("show"); }
+$("pageClose").onclick=()=>{ $("pageModal").classList.remove("show"); $("pageFrame").srcdoc=""; };
+
+/* ================================================================ chat */
+const msgs=$("msgs");
+function addEl(cls, html){ if(msgs.querySelector(".sys:only-child")) msgs.innerHTML=""; const d=document.createElement("div"); d.className=cls; d.innerHTML=html; msgs.appendChild(d); while(msgs.children.length>160) msgs.firstChild.remove(); msgs.scrollTop=msgs.scrollHeight; return d; }
+const chips=[];   // pending tool chips
+function addChip(name,args){
+  const srv=TOOL_SERVER[name] || (/light|color|bright|thermo|countdown|message$|show_|music|song|volume|home/.test(name)?"home":"assist");
+  const d=addEl("chip", `<span class="srv" style="background:${SRV_COLOR[srv]}">${srv}</span><span class="mono">${esc(name)}(${esc(argStr(args))})</span><span class="st"><span class="spin"></span></span>`);
+  chips.push({name, el:d, done:false}); return d;
+}
+function finishChip(name, ms, err, note){
+  const c = chips.find(c=>!c.done && (c.name===name || (name==="run_task" && c.name==="delegate_task")));
+  if(!c) return;
+  if(name==="run_task" || c.name!=="delegate_task") c.done=true;
+  c.el.classList.add(err?"err":"ok");
+  c.el.querySelector(".st").innerHTML = err ? "✗ error" : `✓ ${note||""}${ms!=null?ms+" ms":""}`;
+}
+function latLine(r){
+  const f=(v,t)=>v==null?"":`<span class="${v<=t?"good":"bad"}">${v/1000>=1?(v/1000).toFixed(2)+" s":v+" ms"}</span>`;
+  return `E2E ${f(r.e2e_ms,4000)} · ASR ${f(r.asr_final_ms,800)} · LLM ${f(r.llm_ttft_ms,1500)} · TTS ${f(r.tts_ttfb_ms,600)}`;
+}
+
+/* ================================================================ event reducer */
+function toast(text){ if(replaying) return; const t=document.createElement("div"); t.className="toast"; t.textContent=text; $("toasts").appendChild(t); setTimeout(()=>t.remove(),4200); }
+function flash(id){ if(replaying) return; const e=$(id); e.classList.remove("flash"); void e.offsetWidth; e.classList.add("flash"); }
+function setOrb(state){
+  const o=$("orb"); o.className="orb "+(state||"idle");
+  const L={idle:["Idle","Waiting for you to talk"],listening:["Listening…","VAD hears speech (Silero + Smart Turn v3)"],thinking:["Thinking…","ASR → LLM → tools"],speaking:["Speaking","Talk over me any time — I'll stop"]}[state||"idle"];
+  $("orbState").textContent=L[0]; $("orbSub").textContent=L[1];
+}
+let pendingLat=null;
+
+function apply(ev){
+  const p=ev.payload||{}, k=ev.kind;
+  S.lastSeen=Math.max(S.lastSeen, p.t||0);
+  if(k==="session"){ S.session=p.session; if(!replaying) addEl("sys", `Iris online · ${esc(p.llm||"")} · session ${esc(p.session)}`); }
+  else if(k==="status"){ if(!replaying) setOrb(p.state); }
+  else if(k==="user"){ addEl("msg user", `<div class="who">You</div>${esc(p.text)}`); }
+  else if(k==="iris"){
+    addEl(p.aside?"msg aside":"msg iris", `${p.aside?"":'<div class="who">Iris</div>'}${esc(p.text)}`);
+    if(!p.aside && pendingLat){ addEl("lat", latLine(pendingLat)); pendingLat=null; }
+  }
+  else if(k==="llm_tool"){ addChip(p.name, p.args); }
+  else if(k==="turn"){ pendingLat=p; }
+  else if(k==="barge_in"){ addEl("barge", "✋ barge-in — Iris stopped to listen"); }
+  else if(k==="barge_in_ms"){ const b=[...msgs.querySelectorAll(".barge")].pop(); if(b) b.textContent=`✋ barge-in — playback stopped in ${p.ms} ms`; }
+  else if(k==="tool_start"){
+    if(p.tool==="run_task"){ S.agent.push({task:p.args?.task||"task", started:p.t, status:"running"}); renderAgent(); flash("cAgent"); toast("🛠 Background agent started"); }
+  }
+  else if(k==="tool_result"){ onTool(p); }
+  else if(k==="reminder_fired"){
+    if(p.state) S.assist=p.state; renderTimers(); flash("cTimers");
+    const it=p.item||{}; toast(`${it.kind==="alarm"?"⏰":it.kind==="reminder"?"📌":"⏱️"} ${it.label||it.kind} — ${it.kind==="reminder"?"reminder":"done!"}`);
+    if(!replaying){ $("cTimers").querySelector("h3").classList.add("ring"); setTimeout(()=>$("cTimers").querySelector("h3").classList.remove("ring"),2200); }
+  }
+  else if(k==="agent_page"){
+    const t=[...S.agent].reverse().find(x=>!x.html) || S.agent[S.agent.length-1];
+    if(t){ t.html=p.page_html; t.path=p.path; t.link=p.link; renderAgent(); }
+  }
+}
+function onTool(p){
+  S.actCount++; S.activity.push(p); if(S.activity.length>40) S.activity.shift(); renderActivity();
+  finishChip(p.tool, p.ms, p.error);
+  if(p.server==="home" && p.state){ S.home=p.state; renderRoom(); renderNotes();
+    if(p.tool==="show_countdown"){ S.countdownEnd=(p.t||Date.now()/1000)+(p.args?.seconds||0); }
+    if(/light|bright|color/.test(p.tool)) flash("roomCard");
+  }
+  if(p.server==="assist" && p.state){ S.assist=p.state; renderTimers(); renderNotes(); }
+  if(p.tool==="get_weather"){ S.weather=p; renderWeather(); flash("cWeather"); }
+  else if(p.tool==="web_search"){ S.search=p; renderSearch(); flash("cSearch"); }
+  else if(/set_timer|set_alarm|create_reminder|cancel_reminder/.test(p.tool)) flash("cTimers");
+  else if(/note|send_message|music|song|volume/.test(p.tool)) flash("cNotes");
+  else if(p.tool==="get_time" && p.result?.time) toast(`🕒 ${p.result.time} · ${p.result.date||""}`);
+  else if(p.tool==="run_task"){
+    const t=[...S.agent].reverse().find(x=>x.status==="running") || (S.agent.push({task:p.args?.task||"task",started:p.t}), S.agent[S.agent.length-1]);
+    const r=p.result||{}; t.status=(p.error||r.ok===false)?"error":"done"; t.summary=r.summary; t.seconds=r.seconds; t.link=(r.links||[])[0]||t.link;
+    renderAgent(); flash("cAgent"); toast("✅ Background task finished");
+  }
+}
+
+/* ================================================================ status ticks */
+setInterval(()=>{
+  tickSeg(); if((S.assist.pending||[]).length) renderTimers(); if(S.agent.some(t=>t.status==="running")) renderAgent();
+  const age=Date.now()/1000-S.lastSeen;
+  if(S.mode==="demo"){ $("piDot").className="dot warn"; $("piText").textContent="Pi: simulated"; }
+  else if(S.lastSeen && age<45){ $("piDot").className="dot on"; $("piText").textContent="Pi online"; }
+  else { $("piDot").className="dot"; $("piText").textContent = S.lastSeen ? `Pi last seen ${fmtLeft(age)} ago` : "Pi: waiting"; }
+},1000);
+tickSeg(); renderRoom(); renderNotes();
+
+/* ================================================================ Firebase Realtime Database (REST streaming) */
+let es=null, lastKey="";
+const seen=new Set();
+function cfg(){
+  const q=new URLSearchParams(location.search);
+  if(q.get("db")) store.set("iris-emu-db", q.get("db"));
+  return { db: (CONFIG.db || store.get("iris-emu-db") || "").replace(/\/+$/,"") };
+}
+function setConn(state, text){ $("connDot").className="dot "+(state==="on"?"on":state==="warn"?"warn":""); $("connText").textContent=text; }
+function ingest(obj, isHistory){
+  const cutoff=Date.now()-12*3600*1000;
+  const keys=Object.keys(obj||{}).filter(k=>obj[k] && !seen.has(k)).sort();
+  replaying=isHistory;
+  for(const k of keys){
+    seen.add(k); if(k>lastKey) lastKey=k;
+    const ev=obj[k];
+    if(isHistory && ev.ts && ev.ts<cutoff) continue;
+    try { apply(ev); } catch(e){ console.warn("event", k, e); }
+  }
+  replaying=false;
+}
+function connect(){
+  const c=cfg();
+  if(!c.db){ setConn("off","not connected"); $("setup").classList.add("show"); return; }
+  S.mode="live";
+  const since=store.get("iris-emu-since")||"";
+  const q=`orderBy=${encodeURIComponent('"$key"')}&limitToLast=300`+(since?`&startAt=${encodeURIComponent(JSON.stringify(since+"~"))}`:"");
+  setConn("warn","connecting…");
+  if(es) es.close();
+  es=new EventSource(`${c.db}/iris/events.json?${q}`);
+  es.addEventListener("put", (m)=>{
+    const d=JSON.parse(m.data);
+    if(d.path==="/"){ ingest(d.data, true); setConn("on","live · Firebase Realtime DB"); }
+    else if(d.data){ ingest({[d.path.slice(1).split("/")[0]]: d.data}, false); }
+  });
+  es.addEventListener("patch", (m)=>{ const d=JSON.parse(m.data); if(d.path==="/") ingest(d.data, false); });
+  es.addEventListener("cancel", ()=>setConn("off","Firebase refused to read (check database rules)"));
+  es.addEventListener("auth_revoked", ()=>setConn("off","auth revoked"));
+  es.onerror=()=>{ if(es.readyState!==EventSource.CLOSED) setConn("warn","reconnecting…"); else setConn("off","disconnected"); };
+}
+$("saveCfg").onclick=()=>{ store.set("iris-emu-db",$("inDb").value.trim()); $("setup").classList.remove("show"); connect(); };
+$("demoFromSetup").onclick=()=>{ $("setup").classList.remove("show"); runDemo(); };
+$("btnClear").onclick=()=>{ if(lastKey) store.set("iris-emu-since", lastKey); location.reload(); };
+$("btnFull").onclick=()=>{ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); };
+$("btnDemo").onclick=()=>runDemo();
+
+/* ================================================================ demo replay (no Pi needed) */
+const DEMO_GAME=`<!doctype html><html><body style="margin:0;background:#70c5ce;overflow:hidden;font-family:sans-serif"><canvas id=c></canvas><script>
+const c=document.getElementById('c'),x=c.getContext('2d');let W,H;function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();onresize=rs;
+let y=H/2,v=0,p=[],t=0,s=0,dead=false;function flap(){if(dead){y=H/2;v=0;p=[];s=0;dead=false}v=-7}onkeydown=flap;onmousedown=flap;ontouchstart=flap;
+(function f(){t++;v+=.4;y+=v;if(t%90==0)p.push({x:W,g:120+Math.random()*(H-300)});x.fillStyle='#70c5ce';x.fillRect(0,0,W,H);x.fillStyle='#5ec639';
+for(const q of p){q.x-=3;x.fillRect(q.x,0,60,q.g);x.fillRect(q.x,q.g+170,60,H);if(W/3+15>q.x&&W/3-15<q.x+60&&(y-15<q.g||y+15>q.g+170))dead=true;if(q.x==Math.round(W/3))s++}
+if(y>H||y<0)dead=true;x.fillStyle='#ffd23f';x.beginPath();x.arc(W/3,y,15,0,7);x.fill();x.fillStyle='#000';x.font='bold 28px sans-serif';x.fillText(dead?'Game over - click':'Score '+s,20,40);
+if(dead)v=0;requestAnimationFrame(f)})();<\/script></body></html>`;
+function demoScript(){
+  const H0={light_on:false,color:"white",rgb:[255,255,255],brightness_pct:100,thermostat_c:null,display:"Iris ME3 | ready",music:{playing:false,paused:false,track:null,volume:60}};
+  const h=(o)=>Object.assign({},H0,o);
+  let home=h({});
+  const step=(o)=>{ home=Object.assign({},home,o,{music:Object.assign({},home.music,o.music||{})}); return JSON.parse(JSON.stringify(home)); };
+  const now=()=>Date.now()/1000;
+  const tr=(server,tool,args,result,ms,state)=>({kind:"tool_result",payload:{server,tool,args,result,ms,state}});
+  return [
+    [0,{kind:"session",payload:{session:"demo01",llm:"openrouter/openai/gpt-4.1-mini"}}],
+    [600,{kind:"iris",payload:{text:"Hi, I'm Iris. What can I do for you?",aside:true}}],
+    [900,{kind:"status",payload:{state:"listening"}}],
+    [1500,{kind:"status",payload:{state:"thinking"}}],
+    [300,{kind:"user",payload:{text:"turn on the lights and make them blue"}}],
+    [500,{kind:"llm_tool",payload:{name:"set_lights",args:{on:true}}}],
+    [150,tr("home","set_lights",{on:true},{ok:true,light_on:true},42,step({light_on:true}))],
+    [200,{kind:"llm_tool",payload:{name:"set_light_color",args:{color:"blue"}}}],
+    [150,tr("home","set_light_color",{color:"blue"},{ok:true,color:"blue"},38,step({color:"blue",rgb:[0,90,255]}))],
+    [300,{kind:"turn",payload:{e2e_ms:2950,asr_final_ms:690,llm_ttft_ms:1050,tts_ttfb_ms:310}}],
+    [0,{kind:"status",payload:{state:"speaking"}}],
+    [200,{kind:"iris",payload:{text:"Done, boss — lights on and blue."}}],
+    [1600,{kind:"status",payload:{state:"idle"}}],
+    [900,{kind:"status",payload:{state:"listening"}}],[1300,{kind:"status",payload:{state:"thinking"}}],
+    [300,{kind:"user",payload:{text:"what's the weather in Davao?"}}],
+    [500,{kind:"llm_tool",payload:{name:"get_weather",args:{city:"Davao"}}}],
+    [400,tr("assist","get_weather",{city:"Davao"},{place:"Davao, Philippines",now:"partly cloudy",temp_c:31.2,feels_like_c:36.4,humidity_pct:66,wind_kmh:9.7,today_high_c:32.1,today_low_c:24.6,rain_chance_pct:45},380,{pending:[],notes:[],outbox:[]})],
+    [300,{kind:"turn",payload:{e2e_ms:3420,asr_final_ms:720,llm_ttft_ms:1210,tts_ttfb_ms:330}}],[0,{kind:"status",payload:{state:"speaking"}}],
+    [200,{kind:"iris",payload:{text:"Davao's 31 degrees and partly cloudy, with a 45 percent chance of rain later."}}],
+    [2200,{kind:"status",payload:{state:"listening"}}],[1200,{kind:"status",payload:{state:"thinking"}}],
+    [300,{kind:"user",payload:{text:"set a two minute timer for my tea"}}],
+    [400,{kind:"llm_tool",payload:{name:"set_timer",args:{seconds:120,label:"tea"}}}],
+    [200,tr("assist","set_timer",{seconds:120,label:"tea"},{ok:true,seconds:120},6,{pending:[{id:"a1",kind:"timer",label:"tea",due:now()+120,due_local:"in 2 min"}],notes:[],outbox:[]})],
+    [100,{kind:"llm_tool",payload:{name:"show_countdown",args:{seconds:120}}}],
+    [150,{kind:"tool_result",payload:{server:"home",tool:"show_countdown",args:{seconds:120},result:{ok:true},ms:11,state:step({display:"Timer | 2:00"}),t:now()}}],
+    [300,{kind:"status",payload:{state:"speaking"}}],[100,{kind:"iris",payload:{text:"Tea timer set for two minutes."}}],
+    [1400,{kind:"status",payload:{state:"listening"}}],[1100,{kind:"status",payload:{state:"thinking"}}],
+    [300,{kind:"user",payload:{text:"play some music and set the thermostat to 24"}}],
+    [300,{kind:"llm_tool",payload:{name:"play_music",args:{query:""}}}],
+    [200,tr("home","play_music",{query:""},{ok:true,playing:"Lo-fi Morning"},120,step({music:{playing:true,paused:false,track:"Lo-fi Morning"}}))],
+    [100,{kind:"llm_tool",payload:{name:"set_thermostat",args:{degrees_c:24}}}],
+    [150,tr("home","set_thermostat",{degrees_c:24},{ok:true,thermostat_c:24},9,step({thermostat_c:24}))],
+    [200,{kind:"status",payload:{state:"speaking"}}],
+    [100,{kind:"iris",payload:{text:"Playing Lo-fi Morning, and the thermostat's at 24. Now, about that thermostat — it's actually a fascinating little device that"}}],
+    [1500,{kind:"status",payload:{state:"listening"}}],[0,{kind:"barge_in",payload:{}}],[350,{kind:"barge_in_ms",payload:{ms:380}}],
+    [900,{kind:"status",payload:{state:"thinking"}}],
+    [200,{kind:"user",payload:{text:"actually, what's the latest news about the Raspberry Pi?"}}],
+    [400,{kind:"llm_tool",payload:{name:"web_search",args:{query:"latest Raspberry Pi news"}}}],
+    [900,tr("assist","web_search",{query:"latest Raspberry Pi news"},{answer:"Raspberry Pi has announced new hardware and software updates this month, including OS improvements and new accessories.",results:[{title:"Raspberry Pi News",url:"https://www.raspberrypi.com/news/"},{title:"Raspberry Pi blog",url:"https://www.raspberrypi.com/blog/"}]},880,{pending:[],notes:[],outbox:[]})],
+    [300,{kind:"status",payload:{state:"speaking"}}],[100,{kind:"iris",payload:{text:"Raspberry Pi just announced OS updates and new accessories this month."}}],
+    [1800,{kind:"status",payload:{state:"listening"}}],[1200,{kind:"status",payload:{state:"thinking"}}],
+    [300,{kind:"user",payload:{text:"build me a flappy bird game"}}],
+    [300,{kind:"llm_tool",payload:{name:"delegate_task",args:{task:"Build a simple Flappy Bird browser game"}}}],
+    [100,{kind:"iris",payload:{text:"On it.",aside:true}}],
+    [200,{kind:"tool_start",payload:{server:"agent",tool:"run_task",args:{task:"Build a simple Flappy Bird browser game"},t:now()}}],
+    [300,{kind:"status",payload:{state:"speaking"}}],[100,{kind:"iris",payload:{text:"I'll build that in the background. Anything else meanwhile?"}}],
+    [1500,{kind:"status",payload:{state:"listening"}}],[1000,{kind:"status",payload:{state:"thinking"}}],
+    [200,{kind:"user",payload:{text:"note to self, buy oat milk, and text Mom I'll be late"}}],
+    [300,{kind:"llm_tool",payload:{name:"save_note",args:{text:"buy oat milk"}}}],
+    [150,tr("assist","save_note",{text:"buy oat milk"},{ok:true},4,{pending:[{id:"a1",kind:"timer",label:"tea",due:now()+95,due_local:"in 2 min"}],notes:[{text:"buy oat milk"}],outbox:[]})],
+    [100,{kind:"llm_tool",payload:{name:"send_message",args:{to:"Mom",text:"I'll be late tonight"}}}],
+    [150,tr("assist","send_message",{to:"Mom",text:"I'll be late tonight"},{ok:true},5,{pending:[{id:"a1",kind:"timer",label:"tea",due:now()+95,due_local:"in 2 min"}],notes:[{text:"buy oat milk"}],outbox:[{to:"Mom",text:"I'll be late tonight"}]})],
+    [200,{kind:"status",payload:{state:"speaking"}}],[100,{kind:"iris",payload:{text:"Noted, and Mom's been told you'll be late."}}],
+    [2500,{kind:"status",payload:{state:"idle"}}],
+    [3000,{kind:"tool_result",payload:{server:"agent",tool:"run_task",args:{task:"Build a simple Flappy Bird browser game"},result:{ok:true,summary:"I built a Flappy Bird game — tap or press any key to flap.",links:["http://192.168.1.7:8080/flappy/"],seconds:41.3},ms:41300}}],
+    [100,{kind:"agent_page",payload:{path:"flappy/index.html",link:"http://192.168.1.7:8080/flappy/",page_html:DEMO_GAME}}],
+    [200,{kind:"status",payload:{state:"speaking"}}],[100,{kind:"iris",payload:{text:"Your Flappy Bird game is ready on the Pi's web page."}}],
+    [2000,{kind:"status",payload:{state:"idle"}}],
+  ];
+}
+let demoTimer=null;
+async function runDemo(){
+  clearTimeout(demoTimer); S.mode="demo"; setConn("warn","demo replay (scripted)");
+  msgs.innerHTML=""; S.activity=[]; S.actCount=0; S.agent=[]; S.weather=null; S.search=null; chips.length=0;
+  const steps=demoScript(); let i=0;
+  const next=()=>{ if(i>=steps.length){ setConn("warn","demo finished — Demo replay to run again"); return; }
+    const [d,ev]=steps[i++]; demoTimer=setTimeout(()=>{ ev.payload.t = ev.payload.t || Date.now()/1000; apply(ev); next(); }, d); };
+  next();
+}
+
+if(new URLSearchParams(location.search).has("demo")) runDemo(); else connect();
+</script>
+</body>
+</html>

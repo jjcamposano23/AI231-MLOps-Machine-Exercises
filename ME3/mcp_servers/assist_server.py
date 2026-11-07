@@ -18,7 +18,8 @@ from zoneinfo import ZoneInfo
 import httpx
 from mcp.server.mcpserver import MCPServer
 
-from mcp_servers.common import DATA, get_logger, load_env, serve
+from mcp_servers import emulator_bus
+from mcp_servers.common import DATA, get_logger, load_env, serve, tool
 
 load_env()
 log = get_logger("assist")
@@ -60,7 +61,15 @@ async def _fire_later(rid: str) -> None:
     await asyncio.sleep(max(0.0, item["due"] - time.time()))
     if _reminders.pop(rid, None) is not None:
         _due.append(item)
+        emulator_bus.emit("reminder_fired", item=item, state=_snapshot())
         log.info("due: %s", item)
+
+
+def _snapshot() -> dict:
+    """What the emulator shows: pending timers/alarms/reminders (with epoch due time), notes, sent messages."""
+    return {"pending": sorted(({k: i[k] for k in ("id", "kind", "label", "due", "due_local")}
+                               for i in _reminders.values()), key=lambda i: i["due"]),
+            "notes": _load(NOTES, [])[-6:], "outbox": _load(OUTBOX, [])[-6:]}
 
 
 def _schedule(kind: str, label: str, due_epoch: float) -> dict:
@@ -72,7 +81,7 @@ def _schedule(kind: str, label: str, due_epoch: float) -> dict:
     return item
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def get_time(timezone: str = "") -> dict:
     """Current local date and time. Pass an IANA timezone (e.g. 'Asia/Dubai') for another place."""
     tz = timezone or TZ
@@ -89,20 +98,60 @@ _WMO = {0: "clear sky", 1: "mainly clear", 2: "partly cloudy", 3: "overcast", 45
         96: "thunderstorm with hail", 99: "thunderstorm with hail"}
 
 
-@server.tool()
+# Geocoding from the Pi is slow (~2.7 s) and sometimes stalls in the TLS handshake, so common places are built in
+# and every other lookup is cached; HTTP calls use short timeouts with retries.
+_GEO: dict[str, dict] = {k: {"name": n, "country": "Philippines", "latitude": la, "longitude": lo} for k, n, la, lo in [
+    ("quezon city", "Quezon City", 14.6760, 121.0437), ("qc", "Quezon City", 14.6760, 121.0437),
+    ("diliman", "Diliman, Quezon City", 14.6538, 121.0685), ("up diliman", "Diliman, Quezon City", 14.6538, 121.0685),
+    ("manila", "Manila", 14.5995, 120.9842), ("metro manila", "Manila", 14.5995, 120.9842),
+    ("makati", "Makati", 14.5547, 121.0244), ("pasig", "Pasig", 14.5764, 121.0851),
+    ("taguig", "Taguig", 14.5176, 121.0509), ("marikina", "Marikina", 14.6507, 121.1029),
+    ("caloocan", "Caloocan", 14.6507, 120.9667), ("baguio", "Baguio", 16.4023, 120.5960),
+    ("cebu", "Cebu City", 10.3157, 123.8854), ("cebu city", "Cebu City", 10.3157, 123.8854),
+    ("davao", "Davao City", 7.1907, 125.4553), ("davao city", "Davao City", 7.1907, 125.4553),
+    ("iloilo", "Iloilo City", 10.7202, 122.5621), ("cagayan de oro", "Cagayan de Oro", 8.4542, 124.6319),
+    ("tagaytay", "Tagaytay", 14.1153, 120.9621), ("los banos", "Los Baños", 14.1699, 121.2441)]}
+
+
+async def _get_json(url: str, params: dict, tries: int = 3) -> dict:
+    last: Exception | None = None
+    for i in range(tries):
+        try:
+            r = await _http.get(url, params=params, timeout=httpx.Timeout(6.0, connect=3.0))
+            r.raise_for_status()
+            return r.json()
+        except (httpx.TransportError, httpx.HTTPStatusError) as e:
+            last = e
+            await asyncio.sleep(0.2 * (i + 1))
+    raise last  # type: ignore[misc]
+
+
+async def _geocode(city: str) -> dict | None:
+    key = " ".join(city.lower().replace(",", " ").replace("philippines", "").split())
+    if key not in _GEO:
+        res = (await _get_json("https://geocoding-api.open-meteo.com/v1/search",
+                               {"name": city, "count": 1})).get("results") or []
+        if not res:
+            return None
+        _GEO[key] = res[0]
+    return _GEO[key]
+
+
+@tool(server, snapshot=_snapshot)
 async def get_weather(city: str = "") -> dict:
     """Current weather and today's forecast for a city (default: the user's home city)."""
     city = city or HOME_CITY
-    g = await _http.get("https://geocoding-api.open-meteo.com/v1/search", params={"name": city, "count": 1})
-    res = (g.json().get("results") or [])
-    if not res:
-        return {"error": f"could not find {city!r}"}
-    p = res[0]
-    w = await _http.get("https://api.open-meteo.com/v1/forecast", params={
-        "latitude": p["latitude"], "longitude": p["longitude"], "timezone": "auto",
-        "current": "temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m",
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_probability_max", "forecast_days": 1})
-    d = w.json()
+    try:
+        p = await _geocode(city)
+        if p is None:
+            return {"error": f"could not find {city!r}"}
+        d = await _get_json("https://api.open-meteo.com/v1/forecast", {
+            "latitude": p["latitude"], "longitude": p["longitude"], "timezone": "auto",
+            "current": "temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m",
+            "daily": "temperature_2m_max,temperature_2m_min,precipitation_probability_max", "forecast_days": 1})
+    except Exception as e:  # noqa: BLE001
+        log.warning("weather failed: %r", e)
+        return {"error": "the weather service is not responding right now; tell the user and offer to try again"}
     c, day = d["current"], d["daily"]
     return {"place": f"{p['name']}, {p.get('country', '')}", "now": _WMO.get(c["weather_code"], "unknown"),
             "temp_c": c["temperature_2m"], "feels_like_c": c["apparent_temperature"],
@@ -111,7 +160,7 @@ async def get_weather(city: str = "") -> dict:
             "rain_chance_pct": day["precipitation_probability_max"][0]}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 async def web_search(query: str, max_results: int = 3) -> dict:
     """Search the web for current information (news, prices, flights, schedules, facts) and get a short answer."""
     key = os.environ.get("TAVILY_API_KEY", "")
@@ -128,14 +177,14 @@ async def web_search(query: str, max_results: int = 3) -> dict:
                         for x in d.get("results", [])]}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 async def set_timer(seconds: int, label: str = "timer") -> dict:
     """Start a countdown timer. The assistant announces it when it finishes."""
     item = _schedule("timer", label, time.time() + max(1, int(seconds)))
     return {"ok": True, "id": item["id"], "ends_at": item["due_local"], "seconds": int(seconds)}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 async def set_alarm(time_hhmm: str, label: str = "alarm") -> dict:
     """Set an alarm for a clock time today or tomorrow, 24-hour 'HH:MM' (e.g. '06:30', '21:00')."""
     try:
@@ -150,14 +199,14 @@ async def set_alarm(time_hhmm: str, label: str = "alarm") -> dict:
     return {"ok": True, "id": item["id"], "rings_at": due.strftime("%A %I:%M %p")}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 async def create_reminder(task: str, in_minutes: float) -> dict:
     """Remind the user about a task after a number of minutes (fractions allowed, e.g. 0.5)."""
     item = _schedule("reminder", task, time.time() + max(0.1, float(in_minutes)) * 60)
     return {"ok": True, "id": item["id"], "at": item["due_local"], "task": task}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def list_reminders() -> dict:
     """List the pending timers, alarms and reminders."""
     now = time.time()
@@ -166,7 +215,7 @@ def list_reminders() -> dict:
                                                                                 key=lambda x: x["due"])]}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def cancel_reminder(id_or_label: str) -> dict:
     """Cancel a pending timer/alarm/reminder by its id or label ('all' cancels everything)."""
     keys = list(_reminders) if id_or_label == "all" else \
@@ -176,7 +225,7 @@ def cancel_reminder(id_or_label: str) -> dict:
     return {"cancelled": len(keys)}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def save_note(text: str) -> dict:
     """Save a short note (shopping list item, idea, something to remember)."""
     notes = _load(NOTES, [])
@@ -185,13 +234,13 @@ def save_note(text: str) -> dict:
     return {"ok": True, "count": len(notes)}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def read_notes(last_n: int = 5) -> dict:
     """Read back the most recent saved notes."""
     return {"notes": _load(NOTES, [])[-max(1, int(last_n)):]}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def send_message(to: str, text: str) -> dict:
     """Send a short text message to a contact (queued to the outbox)."""
     box = _load(OUTBOX, [])
@@ -200,7 +249,7 @@ def send_message(to: str, text: str) -> dict:
     return {"ok": True, "to": to, "status": "queued"}
 
 
-@server.tool()
+@tool(server, snapshot=_snapshot)
 def internal_pop_due() -> dict:
     """(Used by the assistant runtime, not the LLM.) Return and clear the timers/alarms/reminders that have fired."""
     out = list(_due)

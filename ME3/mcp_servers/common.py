@@ -10,6 +10,8 @@ Every server is a standalone process speaking MCP over streamable HTTP on localh
 from __future__ import annotations
 
 import asyncio
+import functools
+import inspect
 import logging
 import os
 import time
@@ -80,6 +82,56 @@ class Warmth:
     def after(self) -> None:
         self.busy -= 1
         self.last = time.monotonic()
+
+
+def tool(server, snapshot=None):
+    """Drop-in for @server.tool() that also publishes each call to the web emulator (see emulator_bus):
+    a tool_start event, then tool_result with args, result, duration and an optional state snapshot."""
+    from mcp_servers import emulator_bus as bus
+    sname = getattr(server, "name", "") or ""
+
+    def deco(fn):
+        name = fn.__name__
+        quiet = name.startswith("internal_") or name in ("info", "warm")
+
+        def done(t0, kwargs, result=None, error=None):
+            if quiet:
+                return
+            snap = None
+            if snapshot is not None:
+                try:
+                    snap = snapshot()
+                except Exception:  # noqa: BLE001
+                    pass
+            bus.emit("tool_result", server=sname, tool=name, args=kwargs, result=result, error=error,
+                     ms=round((time.monotonic() - t0) * 1000), state=snap)
+
+        if inspect.iscoroutinefunction(fn):
+            @functools.wraps(fn)
+            async def wrapper(*args, **kwargs):
+                t0 = time.monotonic()
+                if not quiet:
+                    bus.emit("tool_start", server=sname, tool=name, args=kwargs)
+                try:
+                    r = await fn(*args, **kwargs)
+                except Exception as e:
+                    done(t0, kwargs, error=repr(e))
+                    raise
+                done(t0, kwargs, r)
+                return r
+        else:
+            @functools.wraps(fn)
+            def wrapper(*args, **kwargs):
+                t0 = time.monotonic()
+                try:
+                    r = fn(*args, **kwargs)
+                except Exception as e:
+                    done(t0, kwargs, error=repr(e))
+                    raise
+                done(t0, kwargs, r)
+                return r
+        return server.tool()(wrapper)
+    return deco
 
 
 def mark(stage: str, **fields) -> None:
